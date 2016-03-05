@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Configuration\Resolver;
+namespace Fidry\LaravelYaml\DependencyInjection\Resolver;
 
-use Fidry\LaravelYaml\Exception\Configuration\Resolver\ParameterCircularReferenceException;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\ParameterCircularReferenceException;
 use Fidry\LaravelYaml\Exception\ParameterNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class BuildedParameterResolver implements ResolverInterface
+final class BuildedParameterResolver implements ParameterResolverInterface
 {
     /**
      * @var string
@@ -48,16 +48,11 @@ final class BuildedParameterResolver implements ResolverInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}array
      */
-    public function resolve($key)
+    public function resolve($parameter)
     {
-        foreach ($this->parameters as $key => $value) {
-            $value = $this->resolveValue($value, [$key => true]);
-            $this->resolved[$key] = $value;
-        }
-
-        return $this->resolved;
+        return $this->resolveValue($parameter, [$parameter => true]);
     }
 
     /**
@@ -65,6 +60,7 @@ final class BuildedParameterResolver implements ResolverInterface
      * @param array $resolving
      *
      * @return mixed
+     *
      * @throws ParameterCircularReferenceException
      * @throws ParameterNotFoundException
      */
@@ -116,7 +112,9 @@ final class BuildedParameterResolver implements ResolverInterface
         }
 
         if (array_key_exists($key, $this->parameters)) {
-            return $this->parameters[$key];
+            $resolving[$key] = true;
+
+            return $this->resolveValue($this->parameters[$key], $resolving);
         }
 
         if ($this->config->has($key)) {

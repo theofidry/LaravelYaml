@@ -11,11 +11,12 @@
 
 namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 
-use Fidry\LaravelYaml\Configuration\Resolver\ServiceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
-use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
+use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
+use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
+use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ServiceResolver;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
@@ -23,11 +24,11 @@ use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
 final class DefinitionsParser
 {
     /**
-     * @var ServiceResolver
+     * @var ResolverInterface
      */
     private $serviceResolver;
 
-    public function __construct(ServiceResolver $serviceResolver = null)
+    public function __construct(ResolverInterface $serviceResolver = null)
     {
         $this->serviceResolver = (null === $serviceResolver)? new ServiceResolver(): $serviceResolver;
     }
@@ -106,8 +107,6 @@ final class DefinitionsParser
 
             $alias = new Alias($id, $aliasName);
             $container->addAlias($alias);
-
-            return;
         }
 
         $class = $this->getClass($id, $service, $fileName);

@@ -9,23 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Configuration\Resolver;
+namespace Fidry\LaravelYaml\DependencyInjection\Resolver;
 
-use Fidry\LaravelYaml\Exception\Exception;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-interface ResolverInterface
+interface ParameterResolverInterface
 {
     /**
-     * Resolves services.
-     *
-     * @param mixed $value
-     * @param array $resolving
+     * @param string $parameter
      *
      * @return mixed
+     *
      * @throws Exception
      */
-    public function resolve($value);
+    public function resolve($parameter);
 }

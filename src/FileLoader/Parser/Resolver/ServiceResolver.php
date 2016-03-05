@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Configuration\Resolver;
+namespace Fidry\LaravelYaml\FileLoader\Parser\Resolver;
 
-use Fidry\LaravelYaml\Configuration\ResolverInterface;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -19,12 +18,20 @@ use Symfony\Component\ExpressionLanguage\Expression;
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class ServiceResolver
+final class ServiceResolver implements ResolverInterface
 {
     /**
-     * @param array|string $value
+     * Resolves the given value.
      *
-     * @return array|Reference|string|Expression
+     * @example
+     *  ::resolve("@=something") => return an Expression
+     *  ::resolve("@something") => will resolve the service reference to return a Reference object
+     *  ::resolve($arrayValue) => will recursively resolve the values
+     *  Other values are left unchanged
+     *
+     * @param mixed $value
+     *
+     * @return mixed|Expression|Reference
      */
     public function resolve($value)
     {
@@ -56,8 +63,6 @@ final class ServiceResolver
     private function resolveServiceReferenceValue($value)
     {
         $value = substr($value, 1);
-        // $value = "?dummy"
-        // $value = "@dummy" (from "@@dummy")
         $invalidBehavior = BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE;
 
         if (0 === strpos($value, '@')) {

@@ -11,10 +11,11 @@
 
 namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 
-use Fidry\LaravelYaml\Configuration\Resolver\ServiceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
-use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
+use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
 use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
+use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
+use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ServiceResolver;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
@@ -22,11 +23,11 @@ use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
 class ParametersParser implements ParserInterface
 {
     /**
-     * @var ServiceResolver
+     * @var ResolverInterface
      */
     private $serviceResolver;
 
-    public function __construct(ServiceResolver $serviceResolver = null)
+    public function __construct(ResolverInterface $serviceResolver = null)
     {
         $this->serviceResolver = (null === $serviceResolver)? new ServiceResolver(): $serviceResolver;
     }

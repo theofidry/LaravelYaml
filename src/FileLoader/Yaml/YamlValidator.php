@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Fidry\LaravelYaml\Configuration\Validator;
+
+namespace Fidry\LaravelYaml\FileLoader\Yaml;
 
 use Fidry\LaravelYaml\Exception\Configuration\InvalidArgumentException;
 
@@ -18,7 +19,13 @@ use Fidry\LaravelYaml\Exception\Configuration\InvalidArgumentException;
 final class YamlValidator
 {
     /**
-     * {@inheritdoc}
+     * Checks that the content returned by the YAML parser has an understandable definition.
+     *
+     * @param $content
+     * @param $file
+     *
+     * @return mixed
+     * @throws InvalidArgumentException
      */
     public function validate($content, $file)
     {

@@ -9,11 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Exception\Configuration\Resolver;
+namespace Fidry\LaravelYaml\Tests\DependencyInjection\Builder;
 
 /**
+ * @covers Fidry\LaravelYaml\DependencyInjection\Builder\ServicesBuilder
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class Exception extends \Fidry\LaravelYaml\Exception\Configuration\Exception
+class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
 {
+
 }

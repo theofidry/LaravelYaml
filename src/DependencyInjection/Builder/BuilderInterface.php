@@ -11,9 +11,12 @@
 
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
+use Fidry\LaravelYaml\Exception\DependencyInjection\Exception;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
+ * Builders are the classes responsible for adding to the application a definition.
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 interface BuilderInterface
@@ -23,7 +26,11 @@ interface BuilderInterface
     const IGNORE_ON_INVALID_REFERENCE = 2;
 
     /**
+     * Builds the builder definitions.
+     *
      * @param Application $application
+     *
+     * @throws Exception
      */
     public function build(Application $application);
 }

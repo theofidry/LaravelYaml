@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Exception\Configuration\Resolver;
+namespace Fidry\LaravelYaml\Exception\FileLoader;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class ParameterCircularReferenceException extends Exception
+class Exception extends \Fidry\LaravelYaml\Exception\Exception
 {
 }

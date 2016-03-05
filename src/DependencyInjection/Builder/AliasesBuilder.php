@@ -15,12 +15,14 @@ use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
+ * Is responsible for building Alias definitions.
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 final class AliasesBuilder implements BuilderInterface
 {
     /**
-     * @var array|Alias[]
+     * @var Alias[]
      */
     private $aliases;
 
@@ -32,6 +34,9 @@ final class AliasesBuilder implements BuilderInterface
         $this->aliases = $aliases;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(Application $application)
     {
         foreach ($this->aliases as $alias) {

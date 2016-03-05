@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Fidry\LaravelYaml\FileLoader;
 
-use Fidry\LaravelYaml\Configuration\Validator\YamlValidator;
+namespace Fidry\LaravelYaml\FileLoader\Yaml;
+
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
-use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
-use Fidry\LaravelYaml\FileLoaderInterface;
+use Fidry\LaravelYaml\Exception\FileLoader\Exception;
+use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
+use Fidry\LaravelYaml\FileLoader\FileLoaderInterface;
+use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
 use Fidry\LaravelYaml\FileLoader\Parser\Yaml\DefinitionsParser;
 use Fidry\LaravelYaml\FileLoader\Parser\Yaml\ParametersParser;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
@@ -34,7 +36,7 @@ final class YamlFileLoader implements FileLoaderInterface
     private $container;
 
     /**
-     * @var FileLocator
+     * @var FileLocatorInterface
      */
     private $fileLocator;
 
@@ -60,9 +62,9 @@ final class YamlFileLoader implements FileLoaderInterface
 
     public function __construct(
         ContainerBuilder $container,
-        FileLocator $fileLocator,
-        DefinitionsParser $definitionsParser = null,
-        ParametersParser $parametersParser = null,
+        FileLocatorInterface $fileLocator,
+        ParserInterface $definitionsParser = null,
+        ParserInterface $parametersParser = null,
         YamlParser $yamlParser = null,
         YamlValidator $yamlValidator = null
     ) {
@@ -82,6 +84,10 @@ final class YamlFileLoader implements FileLoaderInterface
      *
      * @example
      *  ::load('services.yml')
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @return $this
      */
     public function load($resource)
     {

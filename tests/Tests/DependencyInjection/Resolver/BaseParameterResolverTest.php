@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Tests\Configuration\Resolver;
+namespace Fidry\LaravelYaml\Tests\DependencyInjection\Resolver;
 
-use Fidry\LaravelYaml\Configuration\Resolver\ParameterResolver;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseParametersResolver;
 use Illuminate\Contracts\Config\Repository as ConfigRepositoryInterface;
 use Prophecy\Argument;
 
 /**
- * @covers Configuration\Resolver\ParameterResolver
+ * @covers Fidry\LaravelYaml\DependencyInjection\Resolver\BaseParameterResolver
  *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class ParameterResolverTest extends \PHPUnit_Framework_TestCase
+class BaseParameterResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ConfigRepositoryInterface
@@ -39,25 +39,22 @@ class ParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveParameters($config, $parameters, $expected)
     {
-        //        $resolver = new ParameterResolver($parameters, $config);
-//        $actual = $resolver->resolve();
-//
-//        $this->assertEquals($expected, $actual);
+        $resolver = new BaseParametersResolver($config);
+        $actual = $resolver->resolve($parameters);
+
+        $this->assertEquals($expected, $actual);
     }
 
     /**
-     * @expectedException \Fidry\LaravelYaml\Exception\Configuration\Resolver\ParameterCircularReferenceException
+     * @expectedException \Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\ParameterCircularReferenceException
      */
     public function testResolveParametersWithLoop()
     {
-        $resolver = new ParameterResolver(
-            [
-                'foo' => '%bar%',
-                'bar' => '%foo%',
-            ],
-            $this->config
-        );
-        $resolver->resolve();
+        $resolver = new BaseParametersResolver($this->config);
+        $resolver->resolve([
+            'foo' => '%bar%',
+            'bar' => '%foo%',
+        ]);
     }
 
     /**
@@ -65,13 +62,10 @@ class ParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveParametersWithUnexistingParameter()
     {
-        $resolver = new ParameterResolver(
-            [
-                'foo' => '%hello.world%',
-            ],
-            $this->config
-        );
-        $resolver->resolve();
+        $resolver = new BaseParametersResolver($this->config);
+        $resolver->resolve([
+            'foo' => '%hello.world%',
+        ]);
     }
 
     public function provideParameters()
@@ -87,6 +81,8 @@ class ParameterResolverTest extends \PHPUnit_Framework_TestCase
                 'boolParam' => true,
                 'intParam' => 2000,
                 'floatParam' => -.89,
+                'objectParam' => new \stdClass(),
+                'closureParam' => function () {},
                 'class' => 'App\Test\Dummy',
                 'lang' => [
                     'en',
@@ -109,6 +105,8 @@ class ParameterResolverTest extends \PHPUnit_Framework_TestCase
                 'boolParam' => true,
                 'intParam' => 2000,
                 'floatParam' => -.89,
+                'objectParam' => new \stdClass(),
+                'closureParam' => function () {},
                 'class' => 'App\Test\Dummy',
                 'lang' => [
                     'en',

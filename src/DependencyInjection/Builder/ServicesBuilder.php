@@ -11,11 +11,17 @@
 
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
-use Fidry\LaravelYaml\Configuration\Resolver\BuildedParameterResolver;
-use Fidry\LaravelYaml\Configuration\Resolver\ReferenceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\BuildedParameterResolver;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\ParameterResolverInterface;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\ReferenceResolverInterface;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Exception;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception as ResolverException;
 use Fidry\LaravelYaml\Exception\ServiceNotFoundException;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
@@ -29,7 +35,7 @@ final class ServicesBuilder implements BuilderInterface
     private $parameters;
 
     /**
-     * @var ReferenceResolver
+     * @var ReferenceResolverInterface
      */
     private $referenceResolver;
 
@@ -39,23 +45,49 @@ final class ServicesBuilder implements BuilderInterface
     private $services;
 
     /**
-     * @param Service[]              $services
-     * @param array                  $parameters
-     * @param ReferenceResolver|null $referenceResolver
+     * @var ParameterResolverInterface|null
      */
-    public function __construct(array $services, array $parameters, ReferenceResolver $referenceResolver = null)
-    {
+    private $parameterResolver;
+
+    /**
+     * @param Service[]                       $services
+     * @param array                           $parameters
+     * @param ParameterResolverInterface|null $parameterResolver
+     * @param ReferenceResolverInterface|null $referenceResolver
+     */
+    public function __construct(
+        array $services,
+        array $parameters,
+        ParameterResolverInterface $parameterResolver = null,
+        ReferenceResolverInterface $referenceResolver = null
+    ) {
         $this->services = $services;
         $this->parameters = $parameters;
-        $this->referenceResolver = (null === $referenceResolver) ? new ReferenceResolver() : $referenceResolver;
+        $this->parameterResolver = $parameterResolver;
+        $this->referenceResolver = (null === $referenceResolver) ? new BaseReferenceResolver() : $referenceResolver;
     }
 
     public function build(Application $application)
     {
-        $parameterResolver = new BuildedParameterResolver($this->parameters, $application['config']);
 
-        foreach ($this->services as $service) {
-            $this->buildService($service, $parameterResolver, $application);
+        try {
+            $config = $application->make(ConfigRepository::class);
+            $parameterResolver = (null === $this->parameterResolver)
+                ? new BuildedParameterResolver($this->parameters, $config)
+                : $this->parameterResolver
+            ;
+
+            foreach ($this->services as $service) {
+                $this->buildService($service, $parameterResolver, $application);
+            }
+
+            return $this->parameters;
+        } catch (BindingResolutionException $exception) {
+            throw new Exception(sprintf('Could not load "%s" class', ConfigRepository::class), 0, $exception);
+        } catch (ResolverException $exception) {
+            throw new Exception('Could not resolve the parameters', 0, $exception);
+        } catch (\Exception $exception) {
+            throw new Exception('Could not build the parameters', 0, $exception);
         }
     }
 

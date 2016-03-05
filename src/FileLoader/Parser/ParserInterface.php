@@ -12,7 +12,7 @@
 namespace Fidry\LaravelYaml\FileLoader\Parser;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
-use Fidry\LaravelYaml\Exception\Loader\Exception;
+use Fidry\LaravelYaml\Exception\FileLoader\Exception;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>

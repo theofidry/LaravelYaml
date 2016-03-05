@@ -14,9 +14,18 @@ namespace Fidry\LaravelYaml\DependencyInjection\Extension;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 
 /**
+ * An extension is responsible for loading configuration files.
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 interface ExtensionInterface
 {
+    /**
+     * Load configuration files to add them to the container builder.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @return mixed
+     */
     public function load(ContainerBuilder $container);
 }

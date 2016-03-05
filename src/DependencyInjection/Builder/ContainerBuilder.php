@@ -39,6 +39,31 @@ final class ContainerBuilder implements BuilderInterface
     private $services = [];
 
     /**
+     * @var BuilderInterface|null
+     */
+    private $parametersBuilder;
+
+    /**
+     * @var BuilderInterface|null
+     */
+    private $aliasesBuilder;
+
+    /**
+     * @var ServicesBuilder|null
+     */
+    private $servicesBuilder;
+
+    public function __construct(
+        BuilderInterface $parametersBuilder = null,
+        BuilderInterface $aliasesBuilder = null,
+        BuilderInterface $servicesBuilder = null
+    ) {
+        $this->parametersBuilder = $parametersBuilder;
+        $this->aliasesBuilder = $aliasesBuilder;
+        $this->servicesBuilder = $servicesBuilder;
+    }
+
+    /**
      * @param string                            $key
      * @param array|Reference|string|Expression $value
      */
@@ -65,13 +90,22 @@ final class ContainerBuilder implements BuilderInterface
 
     public function build(Application $application)
     {
-        $parametersBuilder = new ParametersBuilder($this->parameters);
+        $parametersBuilder = (null === $this->parametersBuilder)
+            ? new ParametersBuilder($this->parameters)
+            : $this->parametersBuilder
+        ;
         $parameters = $parametersBuilder->build($application);
 
-        $servicesBuilder = new ServicesBuilder($this->services, $parameters);
+        $servicesBuilder = (null === $this->servicesBuilder)
+            ? new ServicesBuilder($this->services, $parameters)
+            : $this->servicesBuilder
+        ;
         $servicesBuilder->build($application);
 
-        $aliasesBuilder = new AliasesBuilder($this->aliases);
+        $aliasesBuilder = (null === $this->aliasesBuilder)
+            ? new AliasesBuilder($this->aliases)
+            : $this->aliasesBuilder
+        ;
         $aliasesBuilder->build($application);
     }
 }

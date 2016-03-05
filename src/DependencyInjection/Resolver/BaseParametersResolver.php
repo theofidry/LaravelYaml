@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Configuration\Resolver;
+namespace Fidry\LaravelYaml\DependencyInjection\Resolver;
 
-use Fidry\LaravelYaml\Exception\Configuration\Resolver\ParameterCircularReferenceException;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\ParameterCircularReferenceException;
+use Fidry\LaravelYaml\Exception\Exception;
 use Fidry\LaravelYaml\Exception\ParameterNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class ParameterResolver
+final class BaseParametersResolver implements ParametersResolverInterface
 {
     /**
      * @var string
@@ -31,7 +32,7 @@ final class ParameterResolver
     private $config;
 
     /**
-     * @var array
+     * @var array|null
      */
     private $parameters;
 
@@ -40,18 +41,26 @@ final class ParameterResolver
      */
     private $resolved = [];
 
-    public function __construct(array $parameters, ConfigRepository $config)
+    public function __construct(ConfigRepository $config)
     {
-        $this->parameters = $parameters;
         $this->config = $config;
         $this->defaultValue = spl_object_hash(new \stdClass());
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @param array $parameters
+     *
      * @return array
+     *
+     * @throws ParameterCircularReferenceException
+     * @throws ParameterNotFoundException
+     * @throws Exception
      */
-    public function resolve()
+    public function resolve(array $parameters)
     {
+        $this->parameters = $parameters;
         foreach ($this->parameters as $key => $value) {
             $value = $this->resolveValue($value, [$key => true]);
             $this->resolved[$key] = $value;

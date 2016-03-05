@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\DependencyInjection;
+namespace Fidry\LaravelYaml\Exception\DependencyInjection\Resolver;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class ParameterBag
+class ParameterCircularReferenceException extends Exception
 {
 }

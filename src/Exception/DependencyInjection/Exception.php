@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -9,20 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\FileLoader;
-
-use Fidry\LaravelYaml\Exception\Exception;
+namespace Fidry\LaravelYaml\Exception\DependencyInjection;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-interface FileLoaderInterface
+class Exception extends \Fidry\LaravelYaml\Exception\Exception
 {
-    /**
-     * @param string $resource File name or path
-     *
-     * @return $this
-     * @throws Exception
-     */
-    public function load($resource);
 }

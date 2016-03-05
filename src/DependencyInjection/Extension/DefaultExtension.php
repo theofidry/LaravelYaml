@@ -9,26 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Functional\App\DependencyInjection;
+namespace Fidry\LaravelYaml\DependencyInjection\Extension;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
-use Fidry\LaravelYaml\DependencyInjection\Extension\ExtensionInterface;
 use Fidry\LaravelYaml\FileLoader\Yaml\YamlFileLoader;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\Config\FileLocator;
 
-final class AppExtension implements ExtensionInterface
+/**
+ * @author Théo FIDRY <theo.fidry@gmail.com>
+ */
+final class DefaultExtension implements ExtensionInterface
 {
+
     /**
      * {@inheritdoc}
      */
     public function load(ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(resource_path('/services')));
+        $rootDir = new FileLocator(resource_path('/providers'));
+        $loader = new YamlFileLoader($container, $rootDir);
         $loader
             ->load('parameters.yml')
-            ->load('parameters_test.yml')
+            ->load(sprintf('parameters_%s.yml', App::environment()))
             ->load('services.yml')
-            ->load('service_2.yml')
         ;
     }
 }

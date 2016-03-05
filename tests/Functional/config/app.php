@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -148,8 +149,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
 
-        Fidry\LaravelYaml\Functional\App\Providers\AppServiceProvider::class,
-        Fidry\LaravelYaml\Functional\App\Providers\ExtensionProvider::class,
+//        Fidry\LaravelYaml\Functional\App\Providers\AppServiceProvider::class,
+//        Fidry\LaravelYaml\Functional\App\Providers\ExtensionProvider::class,
 
     ],
 

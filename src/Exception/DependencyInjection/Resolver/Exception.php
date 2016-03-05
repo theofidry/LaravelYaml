@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Exception\Loader;
+namespace Fidry\LaravelYaml\Exception\DependencyInjection\Resolver;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class InvalidArgumentException extends Exception
+class Exception extends \Fidry\LaravelYaml\Exception\DependencyInjection\Exception
 {
 }

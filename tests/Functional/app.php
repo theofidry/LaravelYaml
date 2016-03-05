@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -8,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-$app = new Illuminate\Foundation\Application(
+$app = new Fidry\LaravelYaml\Functional\App\Application(
     realpath(__DIR__)
 );
 

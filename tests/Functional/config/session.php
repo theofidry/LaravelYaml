@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>

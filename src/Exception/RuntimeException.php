@@ -18,5 +18,4 @@ use Fidry\LaravelYaml\Exception\Configuration\Resolver\Exception;
  */
 class RuntimeException extends Exception
 {
-
 }

@@ -16,5 +16,4 @@ namespace Fidry\LaravelYaml\Exception;
  */
 class Exception extends \Exception
 {
-
 }

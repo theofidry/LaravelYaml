@@ -16,5 +16,4 @@ namespace Fidry\LaravelYaml\Exception;
  */
 class ServiceNotFoundException extends Exception
 {
-
 }

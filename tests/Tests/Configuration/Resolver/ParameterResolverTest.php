@@ -39,7 +39,7 @@ class ParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveParameters($config, $parameters, $expected)
     {
-//        $resolver = new ParameterResolver($parameters, $config);
+        //        $resolver = new ParameterResolver($parameters, $config);
 //        $actual = $resolver->resolve();
 //
 //        $this->assertEquals($expected, $actual);

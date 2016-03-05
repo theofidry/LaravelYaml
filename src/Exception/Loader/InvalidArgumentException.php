@@ -16,5 +16,4 @@ namespace Fidry\LaravelYaml\Exception\Loader;
  */
 class InvalidArgumentException extends Exception
 {
-
 }

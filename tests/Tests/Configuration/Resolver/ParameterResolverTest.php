@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the LaravelYaml package.
+ *
+ * (c) Théo FIDRY <theo.fidry@gmail.com>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Fidry\LaravelYaml\Tests\Configuration\Resolver;
 
 use Fidry\LaravelYaml\Configuration\Resolver\ParameterResolver;
@@ -7,9 +16,9 @@ use Illuminate\Contracts\Config\Repository as ConfigRepositoryInterface;
 use Prophecy\Argument;
 
 /**
- * @covers             Configuration\Resolver\ParameterResolver
+ * @covers Configuration\Resolver\ParameterResolver
  *
- * @author             Théo FIDRY <theo.fidry@gmail.com>
+ * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 class ParameterResolverTest extends \PHPUnit_Framework_TestCase
 {

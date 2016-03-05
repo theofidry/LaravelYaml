@@ -5,20 +5,21 @@
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
  *
- *  For the full copyright and license information, please view the LICENSE
- *  file that was distributed with this source code.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Loader\Parser\Yaml;
+namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 
 use Fidry\LaravelYaml\Configuration\Resolver\ServiceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
+use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class ParametersParser
+class ParametersParser implements ParserInterface
 {
     /**
      * @var ServiceResolver

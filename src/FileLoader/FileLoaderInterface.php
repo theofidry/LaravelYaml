@@ -5,8 +5,8 @@
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
  *
- *  For the full copyright and license information, please view the LICENSE
- *  file that was distributed with this source code.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Fidry\LaravelYaml;
@@ -19,10 +19,10 @@ use Fidry\LaravelYaml\Exception\Exception;
 interface FileLoaderInterface
 {
     /**
-     * @param string $fileName File name
+     * @param string $resource File name or path
      *
      * @return $this
      * @throws Exception
      */
-    public function load($fileName);
+    public function load($resource);
 }

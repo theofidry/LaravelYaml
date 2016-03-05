@@ -1,27 +1,29 @@
 <?php
 
-/*
+/**
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
  *
- *  For the full copyright and license information, please view the LICENSE
- *  file that was distributed with this source code.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-
-namespace Fidry\LaravelYaml\Loader;
+namespace Fidry\LaravelYaml\FileLoader;
 
 use Fidry\LaravelYaml\Configuration\Validator\YamlValidator;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\Exception\Loader\InvalidArgumentException;
 use Fidry\LaravelYaml\FileLoaderInterface;
-use Fidry\LaravelYaml\Loader\Parser\Yaml\DefinitionsParser;
-use Fidry\LaravelYaml\Loader\Parser\Yaml\ParametersParser;
+use Fidry\LaravelYaml\FileLoader\Parser\Yaml\DefinitionsParser;
+use Fidry\LaravelYaml\FileLoader\Parser\Yaml\ParametersParser;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
+ * This loader is able to load YAML files. Parsed values are interpreted and added to the {@see ContainerBuilder} to be
+ * loaded to the Application later on.
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 final class YamlFileLoader implements FileLoaderInterface
@@ -75,14 +77,19 @@ final class YamlFileLoader implements FileLoaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param string $resource file name
+     *
+     * @example
+     *  ::load('services.yml')
      */
-    public function load($fileName)
+    public function load($resource)
     {
-        $path = $this->fileLocator->locate($fileName);
+        $path = $this->fileLocator->locate($resource);
         $content = $this->loadFile($path);
 
-        $this->parametersParser->parse($this->container, $content, $fileName);
-        $this->definitionsParser->parse($this->container, $content, $fileName);
+        $this->parametersParser->parse($this->container, $content, $resource);
+        $this->definitionsParser->parse($this->container, $content, $resource);
 
         return $this;
     }

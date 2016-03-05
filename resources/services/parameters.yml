@@ -1,0 +1,27 @@
+parameters:
+    env.val: %app.url%
+    true.param: true
+    int.param: 2000
+    locale.setter.system_setter.class: App\Locale\Setter\SystemSetter
+    env.value: %app.url%
+    config.value: %locales.supported%
+    yo: %locale.setter.system_setter.class%
+    foo: %%bar%%
+    foo2: %%%bar2%%%%
+    lang:
+        - en
+        - fr
+    #he
+    perform_feed_providers:
+        mena:
+            entry_point: http://entry-point.com/
+            lang:
+                - ar
+                - fr
+                - en
+            token: 10cr234gdejoejfu3yfs1foru
+            zone: MENA
+            image_host: http://example.com
+            video_categories:
+                - 1hj6t3zey8g7g1pum5ofx5b9u3
+                - pttaqailenzm1ho2o8r00b5lj

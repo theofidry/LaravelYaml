@@ -9,9 +9,31 @@ services:
 
     another_dummy:
         class: Fidry\LaravelYaml\Test\AnotherDummyService
+        alias: another_dummy_alias
         arguments:
             - %service_param%
             - '@?inexisting_service'
             - '@dummy'
         autowiringTypes: [Fidry\LaravelYaml\Test\DummyInterface]
         tags: [{name: dummies}, {name: random_tag}]
+
+    fdummy1:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
+        factory: [Fidry\LaravelYaml\Test\DummyStaticFactory, create]
+
+    fdummy2:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
+        factory: [Fidry\LaravelYaml\Test\DummyStaticFactory, create]
+        arguments:
+            - %service_param%
+
+    dummy_factory:
+        class: Fidry\LaravelYaml\Test\DummyFactory
+        arguments:
+            - '@dummy'
+
+    fdummy3:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
+        factory: ['@dummy_factory', create]
+        arguments:
+            - %service_param%

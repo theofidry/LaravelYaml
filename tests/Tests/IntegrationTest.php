@@ -12,6 +12,7 @@
 namespace Fidry\LaravelYaml\Tests;
 
 use Fidry\LaravelYaml\Test\AnotherDummyService;
+use Fidry\LaravelYaml\Test\DummyFactory;
 use Fidry\LaravelYaml\Test\DummyInterface;
 use Fidry\LaravelYaml\Test\DummyService;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelInterface;
@@ -86,34 +87,74 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testRegisterServices()
+    public function testDummyServiceIsRegistered()
     {
-        /* @var DummyService $dummy */
-        $dummy = static::$app->make('dummy');
-        $this->assertInstanceOf(DummyService::class, $dummy);
+        $this->assertInstanceOf(DummyService::class, static::$app->make('dummy'));
+    }
 
-        $this->assertSame(static::$app->make('foo'), $dummy);
+    public function testFooServiceIsRegistered()
+    {
+        $this->assertSame(static::$app->make('foo'), static::$app->make('dummy'));
+    }
 
-        /* @var AnotherDummyService $anotherDummy */
-        $anotherDummy = static::$app->make('another_dummy');
-        $this->assertInstanceOf(AnotherDummyService::class, $anotherDummy);
-        $this->assertSame(static::$app->make(DummyInterface::class), $anotherDummy);
+    public function testAnotherDummyServiceIsRegistered()
+    {
+        /* @var AnotherDummyService $service */
+        $service = static::$app->make('another_dummy');
+        $this->assertInstanceOf(AnotherDummyService::class, $service);
+        $this->assertSame(static::$app->make(DummyInterface::class), $service);
 
-        $this->assertEquals('yo', $anotherDummy->getParams()[0]);
-        $this->assertEquals(null, $anotherDummy->getParams()[1]);
-        $this->assertSame($dummy, $anotherDummy->getParams()[2]);
+        $this->assertEquals('yo', $service->getParams()[0]);
+        $this->assertEquals(null, $service->getParams()[1]);
+        $this->assertSame(static::$app->make('dummy'), $service->getParams()[2]);
 
         $this->assertSame(
             [
-                $anotherDummy,
+                $service,
             ],
             static::$app->tagged('dummies')
         );
         $this->assertSame(
             [
-                $anotherDummy,
+                $service,
             ],
             static::$app->tagged('random_tag')
         );
+    }
+
+    public function testAnotherFactoryDummy1ServiceIsRegistered()
+    {
+        /* @var AnotherDummyService $service */
+        $service = static::$app->make('fdummy1');
+        $this->assertInstanceOf(AnotherDummyService::class, $service);
+        $this->assertNotSame(static::$app->make(DummyInterface::class), $service);
+    }
+
+    public function testAnotherFactoryDummy2ServiceIsRegistered()
+    {
+        /* @var AnotherDummyService $service */
+        $service = static::$app->make('fdummy2');
+        $this->assertInstanceOf(AnotherDummyService::class, $service);
+        $this->assertNotSame(static::$app->make(DummyInterface::class), $service);
+
+        $this->assertEquals('yo', $service->getParams()[0]);
+    }
+
+    public function testDummyFactoryServiceIsRegistered()
+    {
+        /* @var DummyFactory $service */
+        $service = static::$app->make('dummy_factory');
+        $this->assertInstanceOf(DummyFactory::class, $service);
+        $this->assertSame(static::$app->make(DummyFactory::class), $service);
+    }
+
+    public function testAnotherFactoryDummy3ServiceIsRegistered()
+    {
+        /* @var AnotherDummyService $service */
+        $service = static::$app->make('fdummy3');
+        $this->assertInstanceOf(AnotherDummyService::class, $service);
+        $this->assertNotSame(static::$app->make(DummyInterface::class), $service);
+
+        $this->assertEquals('yo', $service->getParams()[0]);
     }
 }

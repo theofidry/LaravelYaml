@@ -12,12 +12,9 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 
 /**
- * This definition is a simple object representing a service. It encapsulate the data required to instantiate the
- * service and register it to the Application container.
- *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class Service
+final class Service implements ServiceInterface
 {
     /**
      * @var string
@@ -61,7 +58,7 @@ final class Service
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -69,7 +66,7 @@ final class Service
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getClass()
     {
@@ -77,7 +74,7 @@ final class Service
     }
 
     /**
-     * @return string[]|Reference[]
+     * {@inheritdoc}
      */
     public function getArguments()
     {
@@ -85,7 +82,7 @@ final class Service
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getAutowiringTypes()
     {
@@ -93,7 +90,7 @@ final class Service
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getTags()
     {

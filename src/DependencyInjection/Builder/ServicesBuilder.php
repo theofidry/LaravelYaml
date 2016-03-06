@@ -11,6 +11,7 @@
 
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
+use Fidry\LaravelYaml\DependencyInjection\Builder\Instantiator\ServiceInstantiator;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
@@ -71,8 +72,9 @@ final class ServicesBuilder implements BuilderInterface
     {
         try {
             $parameterResolver = $this->getParameterResolver($application);
+            $instantiator = new ServiceInstantiator($parameterResolver, $this->referenceResolver, $application);
             foreach ($this->services as $service) {
-                $this->buildService($service, $parameterResolver, $application);
+                $this->buildService($service, $instantiator, $application);
             }
 
             return $this->parameters;
@@ -92,71 +94,25 @@ final class ServicesBuilder implements BuilderInterface
      */
     private function getParameterResolver(Application $application)
     {
-        if (null === $this->parameterResolver) {
-            $config = $application->make(ConfigRepository::class);
-
-            return new BuiltParameterResolver($this->parameters, $config);
+        if (null !== $this->parameterResolver) {
+            return $this->parameterResolver;
         }
+        $config = $application->make(ConfigRepository::class);
 
-        return $this->parameterResolver;
+        return new BuiltParameterResolver($this->parameters, $config);
     }
 
     private function buildService(
         Service $service,
-        ParameterResolverInterface $parameterResolver,
+        ServiceInstantiator $instantiator,
         Application $application
     ) {
-        $instance = $this->getInstance($service, $parameterResolver, $application);
+        $instance = $instantiator->create($service);
 
         $application->instance($service->getName(), $instance);
         $application->bind($service->getClass(), $service->getName());
         $this->bindAutowiringTypes($service, $application);
         $this->tagService($service, $application);
-    }
-
-    /**
-     * @param Service                    $service
-     * @param ParameterResolverInterface $parameterResolver
-     * @param Application                $application
-     *
-     * @return object
-     */
-    private function getInstance(
-        Service $service,
-        ParameterResolverInterface $parameterResolver,
-        Application $application
-    ) {
-        $constructor = $service->getClass();
-        $resolvedArguments = $this->resolveArguments($service, $parameterResolver, $application);
-
-        return new $constructor(...$resolvedArguments);
-    }
-
-    /**
-     * @param Service                    $service
-     * @param ParameterResolverInterface $parameterResolver
-     * @param Application                $application
-     *
-     * @return array
-     * @throws ServiceNotFoundException
-     */
-    private function resolveArguments(
-        Service $service,
-        ParameterResolverInterface $parameterResolver,
-        Application $application
-    ) {
-        $resolvedArguments = [];
-        foreach ($service->getArguments() as $argument) {
-            if ($argument instanceof Reference) {
-                $resolvedArguments[] = $this->referenceResolver->resolve($argument, $application);
-
-                continue;
-            }
-
-            $resolvedArguments[] = $parameterResolver->resolve($argument);
-        }
-
-        return $resolvedArguments;
     }
 
     private function bindAutowiringTypes(Service $service, Application $application)
@@ -168,10 +124,8 @@ final class ServicesBuilder implements BuilderInterface
 
     private function tagService(Service $service, Application $application)
     {
-        if (count($service->getTags()) === 0) {
-            return;
+        if (count($service->getTags()) !== 0) {
+            $application->tag($service->getName(), array_keys($service->getTags()));
         }
-
-        $application->tag($service->getName(), array_keys($service->getTags()));
     }
 }

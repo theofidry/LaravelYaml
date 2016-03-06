@@ -26,6 +26,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('serviceId', $service->getName());
         $this->assertEquals('App\Dummy', $service->getClass());
+        $this->assertEquals([], $service->getArguments());
+        $this->assertEquals([], $service->getAutowiringTypes());
+        $this->assertEquals([], $service->getTags());
     }
 
     public function testFullConstruct()

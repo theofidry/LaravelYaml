@@ -18,7 +18,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class BuildedParameterResolver implements ParameterResolverInterface
+final class BuiltParameterResolver implements ParameterResolverInterface
 {
     /**
      * @var string
@@ -34,11 +34,6 @@ final class BuildedParameterResolver implements ParameterResolverInterface
      * @var array
      */
     private $parameters;
-
-    /**
-     * @var array
-     */
-    private $resolved = [];
 
     public function __construct(array $parameters, ConfigRepository $config)
     {

@@ -16,11 +16,11 @@ use Illuminate\Contracts\Config\Repository as ConfigRepositoryInterface;
 use Prophecy\Argument;
 
 /**
- * @covers Fidry\LaravelYaml\DependencyInjection\Resolver\BaseParameterResolver
+ * @covers Fidry\LaravelYaml\DependencyInjection\Resolver\BaseParametersResolver
  *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class BaseParameterResolverTest extends \PHPUnit_Framework_TestCase
+class BaseParametersResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ConfigRepositoryInterface

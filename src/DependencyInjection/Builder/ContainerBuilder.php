@@ -49,7 +49,7 @@ final class ContainerBuilder implements BuilderInterface
     private $aliasesBuilder;
 
     /**
-     * @var ServicesBuilder|null
+     * @var BuilderInterface|null
      */
     private $servicesBuilder;
 

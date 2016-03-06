@@ -44,7 +44,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $configRepository = $configRepositoryProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
         $applicationMock = new ApplicationMock($application);
@@ -96,7 +96,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $configRepository = $configRepositoryProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
@@ -272,7 +272,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $resolver = $resolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
         $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
         $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
@@ -305,7 +305,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $resolver = $resolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
         $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
         $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
@@ -341,7 +341,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $resolver = $resolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
         $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
         $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
@@ -375,7 +375,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $resolver = $resolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('config', [])->willReturn($configRepository);
+        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
         $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
         $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
         $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);

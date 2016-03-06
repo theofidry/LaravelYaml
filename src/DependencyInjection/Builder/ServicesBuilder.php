@@ -14,7 +14,7 @@ namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
-use Fidry\LaravelYaml\DependencyInjection\Resolver\BuildedParameterResolver;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\ParameterResolverInterface;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\ReferenceResolverInterface;
 use Fidry\LaravelYaml\Exception\DependencyInjection\Exception;
@@ -73,7 +73,7 @@ final class ServicesBuilder implements BuilderInterface
         try {
             $config = $application->make(ConfigRepository::class);
             $parameterResolver = (null === $this->parameterResolver)
-                ? new BuildedParameterResolver($this->parameters, $config)
+                ? new BuiltParameterResolver($this->parameters, $config)
                 : $this->parameterResolver
             ;
 
@@ -93,7 +93,7 @@ final class ServicesBuilder implements BuilderInterface
 
     private function buildService(
         Service $service,
-        BuildedParameterResolver $parameterResolver,
+        BuiltParameterResolver $parameterResolver,
         Application $application
     ) {
         $application->singleton(
@@ -111,16 +111,16 @@ final class ServicesBuilder implements BuilderInterface
     }
 
     /**
-     * @param Service                  $service
-     * @param BuildedParameterResolver $parameterResolver
-     * @param Application              $application
+     * @param Service                $service
+     * @param BuiltParameterResolver $parameterResolver
+     * @param Application            $application
      *
      * @return array
      * @throws ServiceNotFoundException
      */
     private function resolveArguments(
         Service $service,
-        BuildedParameterResolver $parameterResolver,
+        BuiltParameterResolver $parameterResolver,
         Application $application
     ) {
         $resolvedArguments = [];

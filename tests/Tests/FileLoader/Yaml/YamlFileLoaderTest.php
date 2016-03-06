@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -24,7 +25,7 @@ use Symfony\Component\Yaml\Parser;
 /**
  * @covers Fidry\LaravelYaml\FileLoader\Yaml\YamlFileLoader
  *
- * @author             Théo FIDRY <theo.fidry@gmail.com>
+ * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,7 +46,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
     public function testConstruct()
     {
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate(Argument::any())->shouldNotBeCalled();
+        $fileLocatorProphecy->locate(Argument::cetera())->shouldNotBeCalled();
         /* @var FileLocatorInterface $fileLocator */
         $fileLocator = $fileLocatorProphecy->reveal();
 
@@ -72,9 +73,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $file = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $resource));
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource)
+            ->locate($resource, true)
             ->willReturn($file)
         ;
         /* @var FileLocatorInterface $fileLocator */
@@ -132,9 +133,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $file = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $resource));
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource)
+            ->locate($resource, true)
             ->willReturn($file)
         ;
         /* @var FileLocatorInterface $fileLocator */
@@ -180,9 +181,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $yamlFileContent = 'yaml file content';
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource)
+            ->locate($resource, true)
             ->willReturn(null)
         ;
         /* @var FileLocatorInterface $fileLocator */

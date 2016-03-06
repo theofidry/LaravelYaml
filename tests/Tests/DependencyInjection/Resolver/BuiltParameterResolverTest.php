@@ -11,16 +11,16 @@
 
 namespace Fidry\LaravelYaml\Tests\DependencyInjection\Resolver;
 
-use Fidry\LaravelYaml\DependencyInjection\Resolver\BuildedParameterResolver;
+use Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver;
 use Illuminate\Contracts\Config\Repository as ConfigRepositoryInterface;
 use Prophecy\Argument;
 
 /**
- * @covers Fidry\LaravelYaml\DependencyInjection\Resolver\BuildedParameterResolver
+ * @covers Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver
  *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class BuildedParameterResolverTest extends \PHPUnit_Framework_TestCase
+class BuiltParameterResolverTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ConfigRepositoryInterface
@@ -39,7 +39,7 @@ class BuildedParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveParameters($config, $parameters, $expected)
     {
-        $resolver = new BuildedParameterResolver($parameters, $config);
+        $resolver = new BuiltParameterResolver($parameters, $config);
 
         foreach ($expected as $parameter => $expectedValue) {
             $actual = $resolver->resolve($parameter);
@@ -61,7 +61,7 @@ class BuildedParameterResolverTest extends \PHPUnit_Framework_TestCase
      */
     public function testResolveParametersWithUnexistingParameter()
     {
-        $resolver = new BuildedParameterResolver([], $this->config);
+        $resolver = new BuiltParameterResolver([], $this->config);
         $resolver->resolve('%hello.world%');
     }
 

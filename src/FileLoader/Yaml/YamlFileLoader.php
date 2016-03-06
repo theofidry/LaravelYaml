@@ -41,12 +41,12 @@ final class YamlFileLoader implements FileLoaderInterface
     private $fileLocator;
 
     /**
-     * @var DefinitionsParser
+     * @var ParserInterface
      */
     private $definitionsParser;
 
     /**
-     * @var ParametersParser
+     * @var ParserInterface
      */
     private $parametersParser;
 
@@ -91,7 +91,8 @@ final class YamlFileLoader implements FileLoaderInterface
      */
     public function load($resource)
     {
-        $path = $this->fileLocator->locate($resource);
+        /* @var string|null $path */
+        $path = $this->fileLocator->locate($resource, true);
         $content = $this->loadFile($path);
 
         $this->parametersParser->parse($this->container, $content, $resource);

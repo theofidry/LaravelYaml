@@ -17,6 +17,7 @@ use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
 use Fidry\LaravelYaml\FileLoader\FileLoaderInterface;
 use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
 use Fidry\LaravelYaml\FileLoader\Parser\Yaml\DefinitionsParser;
+use Fidry\LaravelYaml\FileLoader\Parser\Yaml\ImportsParser;
 use Fidry\LaravelYaml\FileLoader\Parser\Yaml\ParametersParser;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -36,6 +37,11 @@ final class YamlFileLoader implements FileLoaderInterface
     private $container;
 
     /**
+     * @var ParserInterface
+     */
+    private $definitionsParser;
+
+    /**
      * @var FileLocatorInterface
      */
     private $fileLocator;
@@ -43,7 +49,7 @@ final class YamlFileLoader implements FileLoaderInterface
     /**
      * @var ParserInterface
      */
-    private $definitionsParser;
+    private $importsParser;
 
     /**
      * @var ParserInterface
@@ -65,6 +71,7 @@ final class YamlFileLoader implements FileLoaderInterface
         FileLocatorInterface $fileLocator,
         ParserInterface $definitionsParser = null,
         ParserInterface $parametersParser = null,
+        ParserInterface $importsParser = null,
         YamlParser $yamlParser = null,
         YamlValidator $yamlValidator = null
     ) {
@@ -73,6 +80,7 @@ final class YamlFileLoader implements FileLoaderInterface
 
         $this->definitionsParser = (null === $definitionsParser) ? new DefinitionsParser() : $definitionsParser;
         $this->parametersParser = (null === $parametersParser) ? new ParametersParser() : $parametersParser;
+        $this->importsParser = (null === $importsParser) ? new ImportsParser() : $importsParser;
         $this->yamlParser = (null === $yamlParser) ? new YamlParser() : $yamlParser;
         $this->yamlValidator = (null === $yamlValidator) ? new YamlValidator() : $yamlValidator;
     }
@@ -95,6 +103,10 @@ final class YamlFileLoader implements FileLoaderInterface
         $path = $this->fileLocator->locate($resource, null, true);
         $content = $this->loadFile($path);
 
+        $imports = $this->importsParser->parse($this->container, $content, $resource);
+        foreach ($imports as $importedResource) {
+            $this->load($importedResource);
+        }
         $this->parametersParser->parse($this->container, $content, $resource);
         $this->definitionsParser->parse($this->container, $content, $resource);
 

@@ -110,6 +110,112 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
             $fileLocator,
             $parametersParser,
             $definitionsParser,
+            null,
+            $yamlParser
+        );
+
+        $self = $loader->load($resource);
+
+        $this->assertSame($loader, $self);
+    }
+
+    public function testParseResourceWithInclude()
+    {
+        $resource = 'dummy.yml';
+        $importedResource = 'foo.yml';
+        $yamlFileContent = 'yaml file content';
+        $yamlParsed = [
+            'imports' => [
+                ['resource' => $importedResource],
+            ],
+        ];
+
+        $this->root->addChild(
+            vfsStream
+                ::newFile($resource)
+                ->withContent($yamlFileContent)
+        );
+        $file = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $resource));
+        $this->root->addChild(
+            vfsStream
+                ::newFile($importedResource)
+                ->withContent('')
+        );
+        $importedfile = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $importedResource));
+
+        $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
+        $fileLocatorProphecy->locate($resource, null, true)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy
+            ->locate($resource, null, true)
+            ->willReturn($file)
+        ;
+        $fileLocatorProphecy
+            ->locate($importedResource, null, true)
+            ->willReturn($importedfile)
+        ;
+        /* @var FileLocatorInterface $fileLocator */
+        $fileLocator = $fileLocatorProphecy->reveal();
+
+        $yamlParserProphecy = $this->prophesize(Parser::class);
+        $yamlParserProphecy->parse($yamlFileContent)->shouldBeCalledTimes(1);
+        $yamlParserProphecy->parse($yamlFileContent)->willReturn($yamlParsed);
+        $yamlParserProphecy->parse('')->shouldBeCalledTimes(1);
+        $yamlParserProphecy->parse('')->willReturn([]);
+        /* @var Parser $yamlParser */
+        $yamlParser = $yamlParserProphecy->reveal();
+
+        $builder = new ContainerBuilder();
+
+        $parametersParserProphecy = $this->prophesize(ParserInterface::class);
+        $parametersParserProphecy
+            ->parse($builder, $yamlParsed, $resource)
+            ->shouldBeCalledTimes(1)
+        ;
+        $parametersParserProphecy
+            ->parse($builder, [], $importedResource)
+            ->shouldBeCalledTimes(1)
+        ;
+        /* @var ParserInterface $parametersParser */
+        $parametersParser = $parametersParserProphecy->reveal();
+
+        $definitionsParserProphecy = $this->prophesize(ParserInterface::class);
+        $definitionsParserProphecy
+            ->parse($builder, $yamlParsed, $resource)
+            ->shouldBeCalledTimes(1)
+        ;
+        $definitionsParserProphecy
+            ->parse($builder, [], $importedResource)
+            ->shouldBeCalledTimes(1)
+        ;
+        /* @var ParserInterface $parametersParser */
+        $definitionsParser = $definitionsParserProphecy->reveal();
+
+        $importsParserProphecy = $this->prophesize(ParserInterface::class);
+        $importsParserProphecy
+            ->parse($builder, $yamlParsed, $resource)
+            ->shouldBeCalledTimes(1)
+        ;
+        $importsParserProphecy
+            ->parse($builder, $yamlParsed, $resource)
+            ->willReturn([$importedResource])
+        ;
+        $importsParserProphecy
+            ->parse($builder, [], $importedResource)
+            ->shouldBeCalledTimes(1)
+        ;
+        $importsParserProphecy
+            ->parse($builder, [], $importedResource)
+            ->willReturn([])
+        ;
+        /* @var ParserInterface $importsParser */
+        $importsParser = $importsParserProphecy->reveal();
+
+        $loader = new YamlFileLoader(
+            $builder,
+            $fileLocator,
+            $parametersParser,
+            $definitionsParser,
+            $importsParser,
             $yamlParser
         );
 
@@ -164,6 +270,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
             $fileLocator,
             $parametersParser,
             $definitionsParser,
+            null,
             $yamlParser
         );
 
@@ -212,6 +319,7 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
             $fileLocator,
             $parametersParser,
             $definitionsParser,
+            null,
             $yamlParser
         );
 

@@ -408,7 +408,7 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
 
         $aliases = [];
         $services = [
-            'foo' => new Service('foo', 'App\Dummy', [], ['App\DummyInterface' => true], []),
+            'foo' => new Service('foo', 'App\Dummy', [], ['App\DummyInterface'], []),
         ];
 
         yield [$content, $resolver, $aliases, $services];

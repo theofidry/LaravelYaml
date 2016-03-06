@@ -14,7 +14,6 @@ namespace Fidry\LaravelYaml\Tests\DependencyInjection\Resolver;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
@@ -58,7 +57,7 @@ class BaseReferenceResolverTest extends \PHPUnit_Framework_TestCase
         $reference = new Reference('dummy', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE);
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('dummy')->willThrow(BindingResolutionException::class);
+        $applicationProphecy->make('dummy')->willThrow(\Exception::class);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
 
@@ -70,7 +69,7 @@ class BaseReferenceResolverTest extends \PHPUnit_Framework_TestCase
         $reference = new Reference('dummy', BuilderInterface::IGNORE_ON_INVALID_REFERENCE);
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('dummy')->willThrow(BindingResolutionException::class);
+        $applicationProphecy->make('dummy')->willThrow(\Exception::class);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
 
@@ -84,27 +83,12 @@ class BaseReferenceResolverTest extends \PHPUnit_Framework_TestCase
         $reference = new Reference('dummy', BuilderInterface::NULL_ON_INVALID_REFERENCE);
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('dummy')->willThrow(BindingResolutionException::class);
+        $applicationProphecy->make('dummy')->willThrow(\Exception::class);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
 
         $actual = $this->resolver->resolve($reference, $application);
 
         $this->assertNull($actual);
-    }
-
-    /**
-     * @expectedException \Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception
-     */
-    public function testResolveError()
-    {
-        $reference = new Reference('dummy', BuilderInterface::IGNORE_ON_INVALID_REFERENCE);
-
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make('dummy')->willThrow(\Exception::class);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-
-        $this->resolver->resolve($reference, $application);
     }
 }

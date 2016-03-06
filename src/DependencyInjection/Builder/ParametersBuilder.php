@@ -60,7 +60,7 @@ final class ParametersBuilder implements BuilderInterface
 
             $parameters = $resolver->resolve($this->parameters);
             foreach ($parameters as $key => $value) {
-                $application->bind($key, $value);
+                $application[$key] = $value;
             }
 
             return $this->parameters;

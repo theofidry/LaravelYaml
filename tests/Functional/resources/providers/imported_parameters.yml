@@ -6,8 +6,8 @@ parameters:
     application.class: Fidry\LaravelYaml\Functional\App\Application
     config_value: %app.locale%
     other_config_val: %application.class%
-    fooo: %%bar%%
-    fooobar: %%%bar2%%%%
+    foo: %%bar%%
+    foobar: %%%bar2%%%%
     lang:
         - en
         - fr

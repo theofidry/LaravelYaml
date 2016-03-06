@@ -24,7 +24,7 @@ return [
         Illuminate\Database\DatabaseServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
-//        \Fidry\LaravelYaml\Provider\DefaultExtensionProvider::class,
+        \Fidry\LaravelYaml\Provider\DefaultExtensionProvider::class,
     ],
     'aliases' => [],
 ];

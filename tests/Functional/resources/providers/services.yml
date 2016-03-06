@@ -1,113 +1,17 @@
 parameters:
-    host_pattern_table: TODO
-    locales.supported: "@=service('config').get('locales.supported')"
-    locale.default: "@=service('config').get('locale.default_locale')"
+    service_param: yo
 
 services:
-    locale.holidays_manager:
-        class: App\Manager\DateTime\HolidaysManager
-        arguments: [%locales.supported%]
-        binds: [App\Manager\DateTime\HolidaysManagerInterface]
+    dummy:
+        class: Fidry\LaravelYaml\Test\DummyService
 
-    locale.provider.in_memory_provider:
-        class: App\Locale\Provider\InMemoryProvider
-        arguments: [%locales.supported%]
-        binds: [App\Locale\Provider\ProviderInterface]
+    foo: '@dummy'
 
-    locale.extractor.host_extractor:
-        class: App\Locale\Extractor\HostExtractor
+    another_dummy:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
         arguments:
-            - %host_pattern_table%
-            - '@locale.provider.in_memory_provider'
-
-    locale.extractor.request_extractor:
-        class: App\Locale\Extractor\DefaultLocaleExtractorDecorator
-        arguments:
-            - '@locale.extractor.host_extractor'
-            - '@locale.default_locale'
-            - '@?logger'
-        binds: [App\Locale\Extractor\ExtractorInterface]
-
-    locale.default_locale:
-        class: App\Locale\Locale
-        arguments: [%locale.default%]
-
-    locale.setter.system_setter:
-        class: %locale.setter.system_setter.class%
-        tags:
-            - { name: locale.setter }
-
-    locale.setter.carbon_setter:
-        class: App\Locale\Setter\CarbonSetter
-        arguments: ['@locale.setter.system_setter']
-        tags:
-            - { name: locale.setter }
-
-    locale.setter.application_setter:
-        class: App\Locale\Setter\ApplicationSetter
-        arguments: ['@locale.setter.system_setter']
-        tags:
-            - { name: locale.setter }
-
-    locale.setter.request_setter:
-        class: App\Locale\Setter\RequestSetter
-        tags:
-            - { name: locale.setter }
-
-    locale.setter.translator_setter:
-        class: App\Locale\Setter\TranslatorSetter
-        tags:
-            - { name: locale.setter }
-
-    locale.setter.url_generator_setter:
-        class: App\Locale\Setter\UrlGeneratorSetter
-        arguments:
-            - %website.protocol%
-            - %website.fr%
-            - %website.gb%
-
-# To be done in the compiler pass
-#        $application->singleton(
-#            'locale.setter.locale_setter',
-#            function (Application $app) {
-#                return new SetterRegistry($app->tagged('locale.setter'));
-#            }
-#        );
-#        $application->bind(SetterRegistry::class, 'locale.setter.locale_setter');
-#        $application->bind(SetterInterface::class, 'locale.setter.locale_setter');
-
-    notifier.appointment.acceptance_notifier:
-        class: App\Mailer\Appointment\AcceptanceMailer
-        arguments:
-            - '@logger'
-            - '@scheduler.appointment.customer_scheduler'
-            - '@carbon.generator'
-            - Illuminate\Contracts\Bus\Dispatcher
-        autowiring_types: [App\Notifier\Appointment\AcceptanceNotifierInterface]
-
-    notifier.appointment.cancellation_notifier:
-        class: App\Mailer\Appointment\CancellationMailer
-        arguments:
-            - Illuminate\Contracts\Bus\Dispatcher
-        autowiring_types: [App\Notifier\Appointment\CancellationNotifierInterface]
-
-    notifier.appointment.new_appointment_notifier:
-        class: App\Mailer\Appointment\NewAppointmentMailer
-        arguments:
-            - '@logger'
-            - '@scheduler.appointment.salon_scheduler'
-            - Illuminate\Contracts\Bus\Dispatcher
-        autowiring_types: [App\Notifier\Appointment\NewAppointmentNotifierInterface]
-
-    notifier.appointment.new_options_notifier:
-        class: App\Mailer\Appointment\NewOptionsMailer
-        arguments:
-            - Illuminate\Contracts\Bus\Dispatcher
-        autowiring_types: [App\Notifier\Appointment\NewOptionsNotifierInterface]
-
-    mailer.appointment.appointment_mailer:
-        class: App\Mailer\Appointment\IlluminateMailerDecorator
-        arguments:
-            - Illuminate\Mail\Mailer
-            - Illuminate\Translation\Translator
-        autowiring_types: [App\Notifier\Appointment\MailerInterface]
+            - %service_param%
+            - '@?inexisting_service'
+            - '@dummy'
+        autowiringTypes: [Fidry\LaravelYaml\Test\DummyInterface]
+        tags: [{name: dummies}, {name: random_tag}]

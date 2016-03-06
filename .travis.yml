@@ -21,11 +21,10 @@ before_install:
       fi
 
 install:
-    - phpunit --self-update
     - composer install --prefer-dist
 
 script:
-    - phpunit -c phpunit.xml.dist --coverage-text
+    - bin/phpunit -c phpunit.xml.dist --coverage-text
 
 after_script:
     - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ]); then

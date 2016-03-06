@@ -14,10 +14,9 @@ namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 
 /**
- * @author Théo FIDRY <theo.fidry@gmail.com>
- * @author Fabien Potencier <fabien@symfony.com>
+ * This definition is a simple object encapsulating to refer to another service.
  *
- * @see    Symfony\Component\DependencyInjection\Reference
+ * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 final class Reference
 {
@@ -33,7 +32,7 @@ final class Reference
 
     /**
      * @param string $id              The service identifier
-     * @param int    $invalidBehavior The behavior when the service does not exist
+     * @param int    $invalidBehavior The behavior when the service cannot be found
      *
      * @see Container
      */
@@ -47,14 +46,6 @@ final class Reference
      * @return string
      */
     public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string The service identifier
-     */
-    public function __toString()
     {
         return $this->id;
     }

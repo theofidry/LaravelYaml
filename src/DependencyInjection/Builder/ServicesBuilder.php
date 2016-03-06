@@ -71,12 +71,7 @@ final class ServicesBuilder implements BuilderInterface
     {
 
         try {
-            $config = $application->make(ConfigRepository::class);
-            $parameterResolver = (null === $this->parameterResolver)
-                ? new BuiltParameterResolver($this->parameters, $config)
-                : $this->parameterResolver
-            ;
-
+            $parameterResolver = $this->getParameterResolver($application);
             foreach ($this->services as $service) {
                 $this->buildService($service, $parameterResolver, $application);
             }
@@ -91,36 +86,64 @@ final class ServicesBuilder implements BuilderInterface
         }
     }
 
+    /**
+     * @param Application $application
+     *
+     * @return ParameterResolverInterface
+     */
+    private function getParameterResolver(Application $application)
+    {
+        if (null === $this->parameterResolver) {
+            $config = $application->make(ConfigRepository::class);
+
+            return new BuiltParameterResolver($this->parameters, $config);
+        }
+
+        return $this->parameterResolver;
+    }
+
     private function buildService(
         Service $service,
-        BuiltParameterResolver $parameterResolver,
+        ParameterResolverInterface $parameterResolver,
         Application $application
     ) {
-        $application->singleton(
-            $service->getName(),
-            function (Application $app) use ($service, $parameterResolver) {
-                $constructor = $service->getClass();
-                $resolvedArguments = $this->resolveArguments($service, $parameterResolver, $app);
+        $instance = $this->getInstance($service, $parameterResolver, $application);
 
-                return call_user_func_array([$constructor, '__construct'], $resolvedArguments);
-            }
-        );
+        $application->instance($service->getName(), $instance);
         $application->bind($service->getClass(), $service->getName());
         $this->bindAutowiringTypes($service, $application);
         $this->tagService($service, $application);
     }
 
     /**
-     * @param Service                $service
-     * @param BuiltParameterResolver $parameterResolver
-     * @param Application            $application
+     * @param Service                    $service
+     * @param ParameterResolverInterface $parameterResolver
+     * @param Application                $application
+     *
+     * @return object
+     */
+    private function getInstance(
+        Service $service,
+        ParameterResolverInterface $parameterResolver,
+        Application $application
+    ) {
+        $constructor = $service->getClass();
+        $resolvedArguments = $this->resolveArguments($service, $parameterResolver, $application);
+
+        return new $constructor(...$resolvedArguments);
+    }
+
+    /**
+     * @param Service                    $service
+     * @param ParameterResolverInterface $parameterResolver
+     * @param Application                $application
      *
      * @return array
      * @throws ServiceNotFoundException
      */
     private function resolveArguments(
         Service $service,
-        BuiltParameterResolver $parameterResolver,
+        ParameterResolverInterface $parameterResolver,
         Application $application
     ) {
         $resolvedArguments = [];
@@ -146,6 +169,10 @@ final class ServicesBuilder implements BuilderInterface
 
     private function tagService(Service $service, Application $application)
     {
+        if (count($service->getTags()) === 0) {
+            return;
+        }
+
         $application->tag($service->getName(), array_keys($service->getTags()));
     }
 }

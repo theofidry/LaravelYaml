@@ -75,8 +75,8 @@ final class DefinitionsParser
     private function parseDefinition(ContainerBuilder $container, $id, $service, $fileName)
     {
         if (is_string($service) && 0 === strpos($service, '@')) {
-            $aliasName = new Alias($id, substr($service, 1));
-            $container->addAlias($aliasName);
+            $alias = new Alias($id, substr($service, 1));
+            $container->addAlias($alias);
 
             return;
         }
@@ -105,14 +105,14 @@ final class DefinitionsParser
                 );
             }
 
-            $alias = new Alias($id, $aliasName);
+            $alias = new Alias($aliasName, $id);
             $container->addAlias($alias);
         }
 
         $class = $this->getClass($id, $service, $fileName);
         $arguments = (isset($service['arguments']))
             ? $this->serviceResolver->resolve($service['arguments'])
-            : null
+            : []
         ;
         $tags = $this->getTags($id, $service, $fileName);
         $autowiringTypes = $this->getAutowiringTypes($id, $service, $fileName);

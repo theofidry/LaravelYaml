@@ -11,6 +11,12 @@
 
 namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 
+/**
+ * This definition is a simple object representing a service. It encapsulate the data required to instantiate the
+ * service and register it to the Application container.
+ *
+ * @author Théo FIDRY <theo.fidry@gmail.com>
+ */
 final class Service
 {
     /**
@@ -24,7 +30,7 @@ final class Service
     private $class;
 
     /**
-     * @var Argument[]|null
+     * @var string[]|Reference[]
      */
     private $arguments;
 
@@ -39,13 +45,13 @@ final class Service
     private $tags;
 
     /**
-     * @param string $name            Name of the service
-     * @param string $class           FQCN of the service
-     * @param array  $arguments       |null       List of arguments passed for the service instantiation
-     * @param array  $autowiringTypes List of autowired classes
-     * @param array  $tags
+     * @param string               $name            Name of the service
+     * @param string               $class           FQCN of the service
+     * @param string[]|Reference[] $arguments       List of arguments passed for the service instantiation
+     * @param array|null           $autowiringTypes List of autowired classes
+     * @param array|null           $tags
      */
-    public function __construct($name, $class, array $arguments = null, array $autowiringTypes, array $tags)
+    public function __construct($name, $class, array $arguments = [], array $autowiringTypes = [], array $tags = [])
     {
         $this->name = $name;
         $this->class = $class;
@@ -71,7 +77,7 @@ final class Service
     }
 
     /**
-     * @return Argument[]|null
+     * @return string[]|Reference[]
      */
     public function getArguments()
     {

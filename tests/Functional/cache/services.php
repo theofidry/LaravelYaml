@@ -5,12 +5,14 @@
     1 => 'Illuminate\\Database\\DatabaseServiceProvider',
     2 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
     3 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+    4 => 'Fidry\\LaravelYaml\\Provider\\DefaultExtensionProvider',
   ),
   'eager' => 
   array (
     0 => 'Illuminate\\Database\\DatabaseServiceProvider',
     1 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
     2 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+    3 => 'Fidry\\LaravelYaml\\Provider\\DefaultExtensionProvider',
   ),
   'deferred' => 
   array (

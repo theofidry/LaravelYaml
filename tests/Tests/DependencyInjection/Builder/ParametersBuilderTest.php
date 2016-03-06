@@ -78,7 +78,7 @@ class ParametersBuilderTest extends \PHPUnit_Framework_TestCase
         $applicationProphecy = $this->prophesize(Application::class);
         $applicationProphecy->make(Repository::class, [])->shouldBeCalledTimes(1);
         $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->bind('foo', 'bar', Argument::any())->shouldBeCalledTimes(1);
+        $applicationProphecy->bind('foo', Argument::type(\Closure::class), Argument::any())->shouldBeCalledTimes(1);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
 

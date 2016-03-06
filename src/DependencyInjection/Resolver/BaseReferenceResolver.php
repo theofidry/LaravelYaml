@@ -12,9 +12,7 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Resolver;
 
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
-use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception;
 use Fidry\LaravelYaml\Exception\ServiceNotFoundException;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 
 /**
@@ -29,7 +27,7 @@ final class BaseReferenceResolver implements ReferenceResolverInterface
     {
         try {
             return $application->make($reference->getId());
-        } catch (BindingResolutionException $exception) {
+        } catch (\Exception $exception) {
             switch (true) {
                 case $reference->throwExceptionOnInvalidBehaviour():
                     throw new ServiceNotFoundException(sprintf('Could not find service "%s"', $reference->getId()));
@@ -39,8 +37,6 @@ final class BaseReferenceResolver implements ReferenceResolverInterface
                 default:
                     return null;
             }
-        } catch (\Exception $exception) {
-            throw new Exception(sprintf('Could not resolve service "%s"', $reference->getId()), 0, $exception);
         }
     }
 }

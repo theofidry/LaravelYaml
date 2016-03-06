@@ -262,6 +262,6 @@ final class DefinitionsParser
             $autowiringTypes[$autowiringType] = true;
         }
 
-        return $autowiringTypes;
+        return array_keys($autowiringTypes);
     }
 }

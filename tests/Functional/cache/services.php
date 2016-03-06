@@ -1,21 +1,21 @@
-<?php return array(
-  'providers' =>
-  array(
+<?php return array (
+  'providers' => 
+  array (
     0 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     1 => 'Illuminate\\Database\\DatabaseServiceProvider',
     2 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
     3 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
-    4 => 'Fidry\\LaravelYaml\\Functional\\App\\Providers\\AppProvider',
+    4 => 'Fidry\\LaravelYaml\\Provider\\DefaultExtensionProvider',
   ),
-  'eager' =>
-  array(
+  'eager' => 
+  array (
     0 => 'Illuminate\\Database\\DatabaseServiceProvider',
     1 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
     2 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
-    3 => 'Fidry\\LaravelYaml\\Functional\\App\\Providers\\AppProvider',
+    3 => 'Fidry\\LaravelYaml\\Provider\\DefaultExtensionProvider',
   ),
-  'deferred' =>
-  array(
+  'deferred' => 
+  array (
     'command.clear-compiled' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.auth.resets.clear' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.config.cache' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
@@ -70,10 +70,10 @@
     'command.queue.forget' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.queue.flush' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
   ),
-  'when' =>
-  array(
-    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' =>
-    array(
+  'when' => 
+  array (
+    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => 
+    array (
     ),
   ),
 );

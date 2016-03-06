@@ -40,7 +40,7 @@ final class YamlValidator
         }
 
         foreach ($content as $namespace => $data) {
-            if (in_array($namespace, ['parameters', 'services'])) {
+            if (in_array($namespace, ['imports', 'parameters', 'services'])) {
                 continue;
             }
 

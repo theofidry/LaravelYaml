@@ -102,7 +102,7 @@ final class ServicesBuilder implements BuilderInterface
                 $constructor = $service->getClass();
                 $resolvedArguments = $this->resolveArguments($service, $parameterResolver, $app);
 
-                return new $constructor(...$resolvedArguments);
+                return call_user_func_array([$constructor, '__construct'], $resolvedArguments);
             }
         );
         $application->bind($service->getClass(), $service->getName());

@@ -13,7 +13,10 @@ namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
+use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryInterface;
+use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
+use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
 use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
 use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ServiceResolver;
@@ -117,8 +120,13 @@ final class DefinitionsParser
         $tags = $this->getTags($id, $service, $fileName);
         $autowiringTypes = $this->getAutowiringTypes($id, $service, $fileName);
 
-        $service = new Service($id, $class, $arguments, $autowiringTypes, $tags);
-        $container->addService($service);
+        $serviceDefinition = new Service($id, $class, $arguments, $autowiringTypes, $tags);
+
+        if (isset($service['factory'])) {
+            $serviceDefinition = $this->parseFactory($serviceDefinition, $service['factory'], $fileName);
+        }
+
+        $container->addService($serviceDefinition);
     }
 
     /**
@@ -263,5 +271,67 @@ final class DefinitionsParser
         }
 
         return array_keys($autowiringTypes);
+    }
+
+    /**
+     * Parses a factory service definition and return the factory object.
+     *
+     * @param ServiceInterface $service
+     * @param mixed            $factory
+     * @param string           $fileName file name
+     *
+     * @return FactoryInterface
+     * @throws InvalidArgumentException
+     */
+    private function parseFactory( ServiceInterface $service, $factory, $fileName)
+    {
+        if (false === is_array($factory)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Parameter "factory" must be an array for service "%s", but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($factory),
+                    $fileName
+                )
+            );
+        }
+
+        if (2 !== count($factory)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Parameter "factory" expects two parameters for service "%s", but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($factory),
+                    $fileName
+                )
+            );
+        }
+
+        $factoryClass = $factory[0];
+        $factoryMethod = $factory[1];
+        if (false === is_string($factoryClass)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The first parameter of "factory" for service "%s" must be a class name or a reference to a service, but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($factoryClass),
+                    $fileName
+                )
+            );
+        }
+        $factoryClass = $this->serviceResolver->resolve($factoryClass);
+
+        if (false === is_string($factoryMethod)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The second parameter of "factory" for service "%s" must be a class name or a reference to a service, but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($factoryMethod),
+                    $fileName
+                )
+            );
+        }
+
+       return new FactoryService($service, $factoryClass, $factoryMethod);
     }
 }

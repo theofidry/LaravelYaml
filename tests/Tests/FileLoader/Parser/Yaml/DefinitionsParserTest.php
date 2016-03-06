@@ -14,6 +14,7 @@ namespace Fidry\LaravelYaml\Tests\FileLoader\Parser\Yaml;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
+use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
@@ -409,6 +410,49 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $aliases = [];
         $services = [
             'foo' => new Service('foo', 'App\Dummy', [], ['App\DummyInterface'], []),
+        ];
+
+        yield [$content, $resolver, $aliases, $services];
+
+        $content = [
+            'services' => [
+                'foo' => [
+                    'class' => 'App\Dummy',
+                    'factory' => [
+                        'App\DummyFactory',
+                        'create',
+                    ],
+                ],
+                'bar' => [
+                    'class' => 'App\Dummy',
+                    'factory' => [
+                        '@foo',
+                        'create',
+                    ],
+                ],
+            ]
+        ];
+
+        $resolverProphecy = $this->prophesize(ResolverInterface::class);
+        $resolverProphecy->resolve('bar')->willReturn('bar');
+        $resolverProphecy->resolve([])->willReturn([]);
+        $resolverProphecy->resolve('App\DummyFactory')->willReturn('App\DummyFactory');
+        $resolverProphecy->resolve('@foo')->willReturn(new Reference('foo', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE));
+        /* @var ResolverInterface $resolver */
+        $resolver = $resolverProphecy->reveal();
+
+        $aliases = [];
+        $services = [
+            'foo' => new FactoryService(
+                new Service('foo', 'App\Dummy', [], [], []),
+                'App\DummyFactory',
+                'create'
+            ),
+            'bar' => new FactoryService(
+                new Service('bar', 'App\Dummy', [], [], []),
+                new Reference('foo', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE),
+                'create'
+            ),
         ];
 
         yield [$content, $resolver, $aliases, $services];

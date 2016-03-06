@@ -123,7 +123,7 @@ class BaseParametersResolverTest extends \PHPUnit_Framework_TestCase
                 'refToNextParam' => 'nextVal',
                 'nextParam' => 'nextVal',
                 'configVal' => 'en-GB',
-                'envVal' => 'dummy',
+                'envVal' => 'DummyEnvValue',
             ]
         ];
     }

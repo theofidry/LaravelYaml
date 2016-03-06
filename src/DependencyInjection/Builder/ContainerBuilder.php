@@ -14,7 +14,7 @@ namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 use Fidry\LaravelYaml\DependencyInjection\Definition;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
-use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
+use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Symfony\Component\ExpressionLanguage\Expression;
 
@@ -34,7 +34,7 @@ final class ContainerBuilder implements BuilderInterface
     private $parameters = [];
 
     /**
-     * @var Service[]
+     * @var ServiceInterface[]
      */
     private $services = [];
 
@@ -81,9 +81,9 @@ final class ContainerBuilder implements BuilderInterface
     }
 
     /**
-     * @param Service $service
+     * @param ServiceInterface $service
      */
-    public function addService(Service $service)
+    public function addService(ServiceInterface $service)
     {
         $this->services[$service->getName()] = $service;
     }

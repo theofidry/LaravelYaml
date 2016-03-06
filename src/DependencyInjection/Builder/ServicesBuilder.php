@@ -12,15 +12,13 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\Instantiator\ServiceInstantiator;
-use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
-use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
+use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\ParameterResolverInterface;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\ReferenceResolverInterface;
 use Fidry\LaravelYaml\Exception\DependencyInjection\Exception;
 use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception as ResolverException;
-use Fidry\LaravelYaml\Exception\ServiceNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
@@ -41,7 +39,7 @@ final class ServicesBuilder implements BuilderInterface
     private $referenceResolver;
 
     /**
-     * @var Service[]
+     * @var ServiceInterface[]
      */
     private $services;
 
@@ -51,7 +49,7 @@ final class ServicesBuilder implements BuilderInterface
     private $parameterResolver;
 
     /**
-     * @param Service[]                       $services
+     * @param ServiceInterface[]              $services
      * @param array                           $parameters
      * @param ParameterResolverInterface|null $parameterResolver
      * @param ReferenceResolverInterface|null $referenceResolver
@@ -103,7 +101,7 @@ final class ServicesBuilder implements BuilderInterface
     }
 
     private function buildService(
-        Service $service,
+        ServiceInterface $service,
         ServiceInstantiator $instantiator,
         Application $application
     ) {
@@ -115,14 +113,14 @@ final class ServicesBuilder implements BuilderInterface
         $this->tagService($service, $application);
     }
 
-    private function bindAutowiringTypes(Service $service, Application $application)
+    private function bindAutowiringTypes(ServiceInterface $service, Application $application)
     {
         foreach ($service->getAutowiringTypes() as $binding) {
             $application->bind($binding, $service->getName());
         }
     }
 
-    private function tagService(Service $service, Application $application)
+    private function tagService(ServiceInterface $service, Application $application)
     {
         if (count($service->getTags()) !== 0) {
             $application->tag($service->getName(), array_keys($service->getTags()));

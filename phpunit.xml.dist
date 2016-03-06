@@ -6,9 +6,9 @@
          stopOnFailure="false">
 
     <logging>
-        <log type="coverage-text"/>
         <log type="testdox-text" target="php://stdout" />
-        <log type="coverage-text" target="php://stdout" />
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" />
+        <log type="coverage-clover" target="coverage.xml" />
     </logging>
 
     <testsuites>

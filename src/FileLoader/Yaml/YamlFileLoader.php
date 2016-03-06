@@ -92,7 +92,7 @@ final class YamlFileLoader implements FileLoaderInterface
     public function load($resource)
     {
         /* @var string|null $path */
-        $path = $this->fileLocator->locate($resource, true);
+        $path = $this->fileLocator->locate($resource, null, true);
         $content = $this->loadFile($path);
 
         $this->parametersParser->parse($this->container, $content, $resource);

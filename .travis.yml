@@ -1,0 +1,36 @@
+language: php
+
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
+php:
+    - 5.5
+    - 5.6
+    - 7.0
+    - nightly
+    - hhvm
+
+matrix:
+    fast_finish: true
+
+before_install:
+    - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ]);
+        then wget https://scrutinizer-ci.com/ocular.phar;
+      fi
+
+install:
+    - composer install --prefer-dist
+
+script:
+    - phpunit -c phpunit.xml.dist --coverage-text
+
+after_script:
+    - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ]); then
+        php ocular.phar code-coverage:upload --format=php-clover coverage.xml;
+      fi
+
+notifications:
+    email: false

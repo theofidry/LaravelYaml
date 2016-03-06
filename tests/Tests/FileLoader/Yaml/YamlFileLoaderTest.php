@@ -73,9 +73,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $file = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $resource));
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, null, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource, true)
+            ->locate($resource, null, true)
             ->willReturn($file)
         ;
         /* @var FileLocatorInterface $fileLocator */
@@ -133,9 +133,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $file = vfsStream::url(sprintf('%s/%s', self::ROOT_DIR, $resource));
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, null, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource, true)
+            ->locate($resource, null, true)
             ->willReturn($file)
         ;
         /* @var FileLocatorInterface $fileLocator */
@@ -181,9 +181,9 @@ class YamlFileLoaderTest extends \PHPUnit_Framework_TestCase
         $yamlFileContent = 'yaml file content';
 
         $fileLocatorProphecy = $this->prophesize(FileLocatorInterface::class);
-        $fileLocatorProphecy->locate($resource, true)->shouldBeCalledTimes(1);
+        $fileLocatorProphecy->locate($resource, null, true)->shouldBeCalledTimes(1);
         $fileLocatorProphecy
-            ->locate($resource, true)
+            ->locate($resource, null, true)
             ->willReturn(null)
         ;
         /* @var FileLocatorInterface $fileLocator */

@@ -27,12 +27,17 @@ final class DefaultExtension implements ExtensionInterface
      */
     public function load(ContainerBuilder $container)
     {
-        $rootDir = new FileLocator(resource_path('/providers'));
+        $rootDir = new FileLocator(resource_path('providers'));
         $loader = new YamlFileLoader($container, $rootDir);
         $loader
             ->load('parameters.yml')
-            ->load(sprintf('parameters_%s.yml', App::environment()))
             ->load('services.yml')
         ;
+
+        try {
+            $loader->load(sprintf('parameters_%s.yml', App::environment()));
+        } catch (\InvalidArgumentException $exception) {
+            // Ignore error as is an optional file
+        }
     }
 }

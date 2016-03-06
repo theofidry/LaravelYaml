@@ -15,7 +15,7 @@ $app = new Fidry\LaravelYaml\Functional\App\Application(
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    Fidry\LaravelYaml\Functional\App\Console\Kernel::class
+    Illuminate\Foundation\Console\Kernel::class
 );
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,

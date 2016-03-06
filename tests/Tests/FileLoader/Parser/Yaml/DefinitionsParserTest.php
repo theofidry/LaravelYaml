@@ -11,12 +11,13 @@
 
 namespace Fidry\LaravelYaml\Tests\FileLoader\Parser\Yaml;
 
+use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
 use Fidry\LaravelYaml\FileLoader\Parser\Yaml\DefinitionsParser;
-use Fidry\LaravelYaml\Test\Foundation\ApplicationMock;
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Foundation\Application;
 use Prophecy\Argument;
 
 /**
@@ -38,25 +39,32 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
+        $builderProphecy = $this->prophesize(BuilderInterface::class);
+        $builderProphecy->build(Argument::any())->shouldNotBeCalled();
+        /* @var BuilderInterface $builder */
+        $builder = $builderProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
-
-        $builder = new ContainerBuilder();
+        $containerBuilderReflectionClass = new \ReflectionClass(ContainerBuilder::class);
+        /* @var ContainerBuilder $containerBuilder */
+        $containerBuilder = $containerBuilderReflectionClass->newInstanceArgs([$builder, $builder, $builder]);
 
         $parser = new DefinitionsParser($resolver);
-        $parser->parse($builder, $content, self::FILE_NAME);
+        $parser->parse($containerBuilder, $content, self::FILE_NAME);
 
-        $builder->build($applicationMock);
+        $containerBuilderReflectionObject = new \ReflectionObject($containerBuilder);
+        $parameters = $containerBuilderReflectionObject->getProperty('parameters');
+        $parameters->setAccessible(true);
+        $actualParameters = $parameters->getValue($containerBuilder);
+        $aliases = $containerBuilderReflectionObject->getProperty('aliases');
+        $aliases->setAccessible(true);
+        $actualAliases = $aliases->getValue($containerBuilder);
+        $services = $containerBuilderReflectionObject->getProperty('services');
+        $services->setAccessible(true);
+        $actualServices = $services->getValue($containerBuilder);
 
-        $this->assertTrue(true);
+        $this->assertCount(0, $actualParameters);
+        $this->assertCount(0, $actualAliases);
+        $this->assertCount(0, $actualServices);
     }
 
     /**
@@ -90,41 +98,70 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
+        $builderProphecy = $this->prophesize(BuilderInterface::class);
+        $builderProphecy->build(Argument::any())->shouldNotBeCalled();
+        /* @var BuilderInterface $builder */
+        $builder = $builderProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
-
-        $builder = new ContainerBuilder();
+        $containerBuilderReflectionClass = new \ReflectionClass(ContainerBuilder::class);
+        /* @var ContainerBuilder $containerBuilder */
+        $containerBuilder = $containerBuilderReflectionClass->newInstanceArgs([$builder, $builder, $builder]);
 
         $parser = new DefinitionsParser($resolver);
-        $parser->parse($builder, $content, self::FILE_NAME);
+        $parser->parse($containerBuilder, $content, self::FILE_NAME);
 
-        $builder->build($applicationMock);
+        $containerBuilderReflectionObject = new \ReflectionObject($containerBuilder);
+        $parameters = $containerBuilderReflectionObject->getProperty('parameters');
+        $parameters->setAccessible(true);
+        $actualParameters = $parameters->getValue($containerBuilder);
+        $aliases = $containerBuilderReflectionObject->getProperty('aliases');
+        $aliases->setAccessible(true);
+        $actualAliases = $aliases->getValue($containerBuilder);
+        $services = $containerBuilderReflectionObject->getProperty('services');
+        $services->setAccessible(true);
+        $actualServices = $services->getValue($containerBuilder);
 
-        $this->assertTrue(true);
+        $this->assertCount(0, $actualParameters);
+        $this->assertEquals(
+            [
+                'foo' => new Alias('foo', 'bar'),
+            ],
+            $actualAliases
+        );
+        $this->assertCount(0, $actualServices);
     }
 
     /**
      * @dataProvider provideValidContent
      */
-    public function testParseValidContent($content, $resolver, $application)
+    public function testParseValidContent($content, $resolver, $expectedAliases, $expectedServices)
     {
-        $builder = new ContainerBuilder();
+        $builderProphecy = $this->prophesize(BuilderInterface::class);
+        $builderProphecy->build(Argument::any())->shouldNotBeCalled();
+        /* @var BuilderInterface $builder */
+        $builder = $builderProphecy->reveal();
+
+        $containerBuilderReflectionClass = new \ReflectionClass(ContainerBuilder::class);
+        /* @var ContainerBuilder $containerBuilder */
+        $containerBuilder = $containerBuilderReflectionClass->newInstanceArgs([$builder, $builder, $builder]);
 
         $parser = new DefinitionsParser($resolver);
-        $parser->parse($builder, $content, self::FILE_NAME);
+        $parser->parse($containerBuilder, $content, self::FILE_NAME);
 
-        $builder->build($application);
+        $containerBuilderReflectionObject = new \ReflectionObject($containerBuilder);
+        $parameters = $containerBuilderReflectionObject->getProperty('parameters');
+        $parameters->setAccessible(true);
+        $actualParameters = $parameters->getValue($containerBuilder);
+        $aliases = $containerBuilderReflectionObject->getProperty('aliases');
+        $aliases->setAccessible(true);
+        $actualAliases = $aliases->getValue($containerBuilder);
+        $services = $containerBuilderReflectionObject->getProperty('services');
+        $services->setAccessible(true);
+        $actualServices = $services->getValue($containerBuilder);
 
-        $this->assertTrue(true);
+        $this->assertCount(0, $actualParameters);
+        $this->assertEquals($expectedAliases, $actualAliases);
+        $this->assertEquals($expectedServices, $actualServices);
     }
 
     public function provideUnknownContent()
@@ -258,63 +295,73 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
                     'class' => 'App\Dummy',
                     'alias' => 'bar',
                 ],
+                'don' => '@foo',
             ]
         ];
-
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
 
         $resolverProphecy = $this->prophesize(ResolverInterface::class);
         $resolverProphecy->resolve('bar')->willReturn('bar');
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
-        $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
+        $aliases = [
+            'bar' => new Alias('bar', 'foo'),
+            'don' => new Alias('don', 'foo'),
+        ];
+        $services = [
+            'foo' => new Service('foo', 'App\Dummy'),
+        ];
 
-        yield [$content, $resolver, $applicationMock];
+        yield [$content, $resolver, $aliases, $services];
 
         $content = [
             'services' => [
                 'foo' => [
                     'class' => 'App\Dummy',
                     'alias' => 'bar',
+                    'arguments' => [
+                        '%default.val%',
+                        '@dummy',
+                    ],
+                ],
+                'donjo' => [
+                    'class' => 'App\AnotherDummy',
                     'arguments' => [],
                 ],
             ]
         ];
 
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
+        $reference = new Reference('dummy', ContainerBuilder::EXCEPTION_ON_INVALID_REFERENCE);
 
         $resolverProphecy = $this->prophesize(ResolverInterface::class);
         $resolverProphecy->resolve('bar')->willReturn('bar');
         $resolverProphecy->resolve([])->willReturn([]);
+        $resolverProphecy->resolve('%default.val%')->shouldBeCalled();
+        $resolverProphecy->resolve('@dummy')->shouldBeCalled();
+        $resolverProphecy->resolve(['%default.val%', '@dummy'])->willReturn(['%default.val%', $reference]);
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
-        $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
+        $aliases = [
+            'bar' => new Alias('bar', 'foo'),
+        ];
+        $services = [
+            'foo' => new Service(
+                'foo',
+                'App\Dummy',
+                [
+                    '%default.val%',
+                    $reference,
+                ]
+            ),
+            'donjo' => new Service(
+                'donjo',
+                'App\AnotherDummy',
+                []
+            ),
+        ];
 
-        yield [$content, $resolver, $applicationMock];
+        yield [$content, $resolver, $aliases, $services];
 
         $content = [
             'services' => [
@@ -329,28 +376,18 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
-
         $resolverProphecy = $this->prophesize(ResolverInterface::class);
         $resolverProphecy->resolve('bar')->willReturn('bar');
         $resolverProphecy->resolve([])->willReturn([]);
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
-        $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
+        $aliases = [];
+        $services = [
+            'foo' => new Service('foo', 'App\Dummy', [], [], ['foo' => []]),
+        ];
 
-        yield [$content, $resolver, $applicationMock];
+        yield [$content, $resolver, $aliases, $services];
 
         $content = [
             'services' => [
@@ -363,27 +400,17 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
             ]
         ];
 
-        $configRepositoryProphecy = $this->prophesize(Repository::class);
-        $configRepositoryProphecy->get(Argument::any())->shouldNotBeCalled();
-        /* @var Repository $configRepository */
-        $configRepository = $configRepositoryProphecy->reveal();
-
         $resolverProphecy = $this->prophesize(ResolverInterface::class);
         $resolverProphecy->resolve('bar')->willReturn('bar');
         $resolverProphecy->resolve([])->willReturn([]);
         /* @var ResolverInterface $resolver */
         $resolver = $resolverProphecy->reveal();
 
-        $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->make(Repository::class, [])->willReturn($configRepository);
-        $applicationProphecy->singleton('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->bind(Argument::cetera())->shouldBeCalledTimes(1);
-        $applicationProphecy->tag('foo', Argument::any())->shouldBeCalledTimes(1);
-        $applicationProphecy->alias('bar', 'foo')->shouldBeCalledTimes(1);
-        /* @var Application $application */
-        $application = $applicationProphecy->reveal();
-        $applicationMock = new ApplicationMock($application);
+        $aliases = [];
+        $services = [
+            'foo' => new Service('foo', 'App\Dummy', [], ['App\DummyInterface' => true], []),
+        ];
 
-        yield [$content, $resolver, $applicationMock];
+        yield [$content, $resolver, $aliases, $services];
     }
 }

@@ -12,6 +12,8 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 
 /**
+ * This definition is a simple object encapsulating the required data to register an alias to the Application container.
+ *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
 final class Alias

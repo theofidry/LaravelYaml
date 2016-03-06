@@ -69,7 +69,6 @@ final class ServicesBuilder implements BuilderInterface
 
     public function build(Application $application)
     {
-
         try {
             $parameterResolver = $this->getParameterResolver($application);
             foreach ($this->services as $service) {

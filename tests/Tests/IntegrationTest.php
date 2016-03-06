@@ -82,7 +82,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         ];
 
         foreach ($expected as $key => $value) {
-            $this->assertEquals($value, static::$app[$key], sprintf('Failed to equality for paremter "%s"', $key));
+            $this->assertEquals($value, static::$app[$key], sprintf('Failed to equality for parameter "%s"', $key));
         }
     }
 

@@ -126,5 +126,3 @@ class ParametersParserTest extends \PHPUnit_Framework_TestCase
         yield [['parameters' => true]];
     }
 }
-
-

@@ -23,7 +23,7 @@ final class DefaultExtensionProvider extends IlluminateServiceProvider implement
     /**
      * {@inheritdoc}
      */
-    final public function register()
+    public function register()
     {
         $container = new ContainerBuilder();
 

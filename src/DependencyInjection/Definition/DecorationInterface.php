@@ -17,8 +17,12 @@ namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 interface DecorationInterface extends ServiceInterface
 {
     /**
-     * @return array<string, string> The first value is the service id of the decorated service. The second argument is
-     *                               the new name of the decorated service.
+     * @return string Name of the decorated service
      */
-    public function getDecoration();
+    public function getDecorates();
+
+    /**
+     * @return string New name of the decorated service
+     */
+    public function getDecorationInnerName();
 }

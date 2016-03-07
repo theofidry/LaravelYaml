@@ -461,16 +461,16 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $content = [
             'services' => [
                 'foo' => [
-                    'class' => 'App\Dummy',
+                    'class' => 'App\Foo',
                 ],
-                'newFoo' => [
-                    'class' => 'App\Dummy',
+                'bar' => [
+                    'class' => 'App\Bar',
                     'decorates' => 'foo',
                 ],
-                'newNewFoo' => [
+                'dummy' => [
                     'class' => 'App\Dummy',
                     'decorates' => 'foo',
-                    'decoration_inner_name' => 'bar',
+                    'decoration_inner_name' => 'dudu',
                 ],
             ]
         ];
@@ -484,29 +484,10 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
         $resolver = $resolverProphecy->reveal();
 
         $aliases = [];
-        $foo = new Service('foo.inner', 'App\Dummy', [], [], []);
-        $newFoo = new Service(
-            'bar',
-            $foo->getClass(),
-            $foo->getArguments(),
-            $foo->getAutowiringTypes(),
-            $foo->getTags()
-        );
-        $newNewFoo = new Decoration(
-            new Service(
-                'newnewfoo',
-                $foo->getClass(),
-                $foo->getArguments(),
-                $foo->getAutowiringTypes(),
-                $foo->getTags()
-            ),
-            'foo',
-            'bar'
-        );
         $services = [
-            'foo' => $newNewFoo,
-            'bar' => $newFoo,
-            'foo.inner' => $foo,
+            'bar.inner' => new Service('bar.inner', 'App\Foo'),
+            'dudu' => new Service('dudu', 'App\Bar'),
+            'foo' => new Service('foo', 'App\Dummy'),
         ];
 
         yield [$content, $resolver, $aliases, $services];

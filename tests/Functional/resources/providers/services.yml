@@ -5,7 +5,7 @@ services:
     dummy:
         class: Fidry\LaravelYaml\Test\DummyService
 
-    foo: '@dummy'
+    dudu: '@dummy'
 
     another_dummy:
         class: Fidry\LaravelYaml\Test\AnotherDummyService
@@ -38,18 +38,18 @@ services:
         arguments:
             - %service_param%
 
-    ddummy:
-        class: Fidry\LaravelYaml\Test\DummyService
+    foo:
+        class: Fidry\LaravelYaml\Test\Foo
 
-    danother_dummy:
-        class: Fidry\LaravelYaml\Test\AnotherDummyService
-        decorates: ddummy
+    bar:
+        class: Fidry\LaravelYaml\Test\Bar
+        decorates: foo
         arguments:
-            - '@ddummy.inner'
+            - '@bar.inner'
 
-    ddanother_dummy:
-        class: Fidry\LaravelYaml\Test\AnotherDummyService
-        decorates: ddummy
+    booze:
+        class: Fidry\LaravelYaml\Test\Booze
+        decorates: foo
         decoration_inner_name: surprise
         arguments:
             - '@surprise'

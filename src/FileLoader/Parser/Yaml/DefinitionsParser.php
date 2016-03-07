@@ -13,8 +13,10 @@ namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Decoration;
+use Fidry\LaravelYaml\DependencyInjection\Definition\DecorationInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryInterface;
-use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Factory;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
@@ -124,6 +126,8 @@ final class DefinitionsParser
 
         if (isset($service['factory'])) {
             $serviceDefinition = $this->parseFactory($serviceDefinition, $service['factory'], $fileName);
+        } elseif (isset($service['decorates'])) {
+            $serviceDefinition = $this->parseDecoration($serviceDefinition, $service, $fileName);
         }
 
         $container->addService($serviceDefinition);
@@ -283,7 +287,7 @@ final class DefinitionsParser
      * @return FactoryInterface
      * @throws InvalidArgumentException
      */
-    private function parseFactory( ServiceInterface $service, $factory, $fileName)
+    private function parseFactory(ServiceInterface $service, $factory, $fileName)
     {
         if (false === is_array($factory)) {
             throw new InvalidArgumentException(
@@ -332,6 +336,45 @@ final class DefinitionsParser
             );
         }
 
-       return new FactoryService($service, $factoryClass, $factoryMethod);
+       return new Factory($service, $factoryClass, $factoryMethod);
+    }
+
+    /**
+     * Parses a factory service definition and return the factory object.
+     *
+     * @param ServiceInterface $service
+     * @param mixed            $decoration
+     * @param string           $fileName file name
+     *
+     * @return DecorationInterface
+     * @throws InvalidArgumentException
+     */
+    private function parseDecoration(ServiceInterface $service, $decoration, $fileName)
+    {
+        if (false === is_string($decoration['decorates'])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Parameter "decorates" for service "%s" must be the id of another service, but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($decoration['decorates']),
+                    $fileName
+                )
+            );
+        }
+        $decorates = $decoration['decorates'];
+
+        $decorationInnerName = (isset($decoration['decoration_inner_name'])) ? $decoration['decoration_inner_name'] : null;
+        if (null !== $decorationInnerName && false === is_string($decorationInnerName)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Parameter "decoration_inner_name" for service "%s" must be a string if is set, but found "%s" instead in %s. Check your YAML syntax.',
+                    $service->getName(),
+                    gettype($decorationInnerName),
+                    $fileName
+                )
+            );
+        }
+
+        return new Decoration($service, $decorates, $decorationInnerName);
     }
 }

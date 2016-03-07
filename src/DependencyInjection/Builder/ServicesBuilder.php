@@ -12,6 +12,7 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\Instantiator\ServiceInstantiator;
+use Fidry\LaravelYaml\DependencyInjection\Definition\DecorationInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver;
@@ -105,9 +106,13 @@ final class ServicesBuilder implements BuilderInterface
         ServiceInstantiator $instantiator,
         Application $application
     ) {
-        $instance = $instantiator->create($service);
-
-        $application->instance($service->getName(), $instance);
+        $serviceId = ($service instanceof DecorationInterface) ? $service->getDecoration()[0] : $service->getName();
+        $application->singleton(
+            $serviceId,
+            function () use ($instantiator, $service) {
+                return $instantiator->create($service);
+            }
+        );
         $application->bind($service->getClass(), $service->getName());
         $this->bindAutowiringTypes($service, $application);
         $this->tagService($service, $application);

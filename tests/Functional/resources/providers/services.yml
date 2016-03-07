@@ -37,3 +37,19 @@ services:
         factory: ['@dummy_factory', create]
         arguments:
             - %service_param%
+
+    ddummy:
+        class: Fidry\LaravelYaml\Test\DummyService
+
+    danother_dummy:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
+        decorates: ddummy
+        arguments:
+            - '@ddummy.inner'
+
+    ddanother_dummy:
+        class: Fidry\LaravelYaml\Test\AnotherDummyService
+        decorates: ddummy
+        decoration_inner_name: surprise
+        arguments:
+            - '@surprise'

@@ -1,3 +1,6 @@
+imports:
+    - { resource: 'parameters_imported.yml' }
+
 parameters:
     other_config_val_before: %env_val%
     env_val: %app.url%

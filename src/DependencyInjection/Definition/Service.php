@@ -96,4 +96,21 @@ final class Service implements ServiceInterface
     {
         return $this->tags;
     }
+
+    /**
+     * @param ServiceInterface    $service
+     * @param DecorationInterface $decoration
+     *
+     * @return $this
+     */
+    public static function createFromDecoration(ServiceInterface $service, DecorationInterface $decoration)
+    {
+        return new self(
+            $decoration->getDecoration()[1],
+            $service->getClass(),
+            $service->getArguments(),
+            $service->getAutowiringTypes(),
+            $service->getTags()
+        );
+    }
 }

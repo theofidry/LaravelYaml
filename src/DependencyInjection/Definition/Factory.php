@@ -14,7 +14,7 @@ namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class FactoryService implements FactoryInterface
+final class Factory implements FactoryInterface
 {
     /**
      * @var ServiceInterface

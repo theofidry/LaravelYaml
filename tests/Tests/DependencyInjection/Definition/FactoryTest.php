@@ -12,16 +12,16 @@
 namespace Fidry\LaravelYaml\Tests\DependencyInjection\Definition;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
-use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Factory;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 
 /**
- * @covers Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService
+ * @covers Fidry\LaravelYaml\DependencyInjection\Definition\Factory
  *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class FactoryServiceTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct()
     {
@@ -39,7 +39,7 @@ class FactoryServiceTest extends \PHPUnit_Framework_TestCase
         /* @var ServiceInterface $service */
         $service = $serviceProphecy->reveal();
 
-        $factory = new FactoryService($service, 'factoryClass', 'create');
+        $factory = new Factory($service, 'factoryClass', 'create');
 
         $this->assertEquals('serviceId', $factory->getName());
         $this->assertEquals('App\Dummy', $factory->getClass());
@@ -49,7 +49,7 @@ class FactoryServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['factoryClass', 'create'], $factory->getFactory());
 
         $reference = new Reference('foo', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE);
-        $factory = new FactoryService($service, $reference, 'create');
+        $factory = new Factory($service, $reference, 'create');
 
         $this->assertEquals('serviceId', $factory->getName());
         $this->assertEquals('App\Dummy', $factory->getClass());

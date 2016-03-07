@@ -13,7 +13,9 @@ namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
 use Fidry\LaravelYaml\DependencyInjection\Definition;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
+use Fidry\LaravelYaml\DependencyInjection\Definition\DecorationInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -85,6 +87,14 @@ final class ContainerBuilder implements BuilderInterface
      */
     public function addService(ServiceInterface $service)
     {
+        if ($service instanceof DecorationInterface) {
+            $inner = $this->services[$service->getDecoration()[0]];
+            $this->services[$service->getDecoration()[1]] = Service::createFromDecoration($inner, $service);
+            $this->services[$service->getDecoration()[0]] = $service;
+
+            return;
+        }
+
         $this->services[$service->getName()] = $service;
     }
 

@@ -78,7 +78,7 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $referenceResolver = $referenceResolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->instance('dummy', Argument::type(DummyService::class))->shouldBeCalledTimes(1);
+        $applicationProphecy->singleton('dummy', Argument::type(\Closure::class))->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyService::class, 'dummy', false)->shouldBeCalledTimes(1);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
@@ -109,20 +109,17 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         ];
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->instance('dummy', Argument::type(DummyService::class))->shouldBeCalledTimes(1);
+        $applicationProphecy->singleton('dummy', Argument::type(\Closure::class))->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyService::class, 'dummy', false)->shouldBeCalledTimes(1);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
         $application = new ApplicationMock($application);
 
         $parameterResolverProphecy = $this->prophesize(ParameterResolverInterface::class);
-        $parameterResolverProphecy->resolve('%foo%')->shouldBeCalledTimes(1);
-        $parameterResolverProphecy->resolve('%foo%')->willReturn('bar');
         /* @var ParameterResolverInterface $parameterResolver */
         $parameterResolver = $parameterResolverProphecy->reveal();
 
         $referenceResolverProphecy = $this->prophesize(ReferenceResolverInterface::class);
-        $referenceResolverProphecy->resolve($reference, $application)->shouldBeCalledTimes(1);
         /* @var ReferenceResolverInterface $referenceResolver */
         $referenceResolver = $referenceResolverProphecy->reveal();
 
@@ -151,7 +148,7 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $referenceResolver = $referenceResolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->instance('dummy', Argument::type(DummyService::class))->shouldBeCalledTimes(1);
+        $applicationProphecy->singleton('dummy', Argument::type(\Closure::class))->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyService::class, 'dummy', false)->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyInterface::class, 'dummy', false)->shouldBeCalledTimes(1);
         /* @var Application $application */
@@ -183,7 +180,7 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $referenceResolver = $referenceResolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->instance('dummy', Argument::type(DummyService::class))->shouldBeCalledTimes(1);
+        $applicationProphecy->singleton('dummy', Argument::type(\Closure::class))->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyService::class, 'dummy', false)->shouldBeCalledTimes(1);
         $applicationProphecy->tag('dummy', ['dummyTag'])->shouldBeCalledTimes(1);
         /* @var Application $application */
@@ -218,7 +215,7 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $referenceResolver = $referenceResolverProphecy->reveal();
 
         $applicationProphecy = $this->prophesize(Application::class);
-        $applicationProphecy->instance('dummy', Argument::type(DummyService::class))->shouldBeCalledTimes(1);
+        $applicationProphecy->singleton('dummy', Argument::type(\Closure::class))->shouldBeCalledTimes(1);
         $applicationProphecy->bind(DummyService::class, 'dummy', false)->willThrow(BindingResolutionException::class);
         /* @var Application $application */
         $application = $applicationProphecy->reveal();
@@ -242,7 +239,6 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $parameters = [];
 
         $parameterResolverProphecy = $this->prophesize(ParameterResolverInterface::class);
-        $parameterResolverProphecy->resolve('%foo%')->shouldBeCalledTimes(1);
         $parameterResolverProphecy->resolve('%foo%')->willThrow(ResolverException::class);
         /* @var ParameterResolverInterface $parameterResolver */
         $parameterResolver = $parameterResolverProphecy->reveal();
@@ -276,7 +272,6 @@ class ServicesBuilderTest extends \PHPUnit_Framework_TestCase
         $parameters = [];
 
         $parameterResolverProphecy = $this->prophesize(ParameterResolverInterface::class);
-        $parameterResolverProphecy->resolve('%foo%')->shouldBeCalledTimes(1);
         $parameterResolverProphecy->resolve('%foo%')->willThrow(\Exception::class);
         /* @var ParameterResolverInterface $parameterResolver */
         $parameterResolver = $parameterResolverProphecy->reveal();

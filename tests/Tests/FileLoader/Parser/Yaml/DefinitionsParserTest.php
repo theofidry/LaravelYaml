@@ -14,7 +14,8 @@ namespace Fidry\LaravelYaml\Tests\FileLoader\Parser\Yaml;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
-use Fidry\LaravelYaml\DependencyInjection\Definition\FactoryService;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Decoration;
+use Fidry\LaravelYaml\DependencyInjection\Definition\Factory;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
 use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
@@ -443,16 +444,69 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
 
         $aliases = [];
         $services = [
-            'foo' => new FactoryService(
+            'foo' => new Factory(
                 new Service('foo', 'App\Dummy', [], [], []),
                 'App\DummyFactory',
                 'create'
             ),
-            'bar' => new FactoryService(
+            'bar' => new Factory(
                 new Service('bar', 'App\Dummy', [], [], []),
                 new Reference('foo', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE),
                 'create'
             ),
+        ];
+
+        yield [$content, $resolver, $aliases, $services];
+
+        $content = [
+            'services' => [
+                'foo' => [
+                    'class' => 'App\Dummy',
+                ],
+                'newFoo' => [
+                    'class' => 'App\Dummy',
+                    'decorates' => 'foo',
+                ],
+                'newNewFoo' => [
+                    'class' => 'App\Dummy',
+                    'decorates' => 'foo',
+                    'decoration_inner_name' => 'bar',
+                ],
+            ]
+        ];
+
+        $resolverProphecy = $this->prophesize(ResolverInterface::class);
+        $resolverProphecy->resolve('bar')->willReturn('bar');
+        $resolverProphecy->resolve([])->willReturn([]);
+        $resolverProphecy->resolve('App\DummyFactory')->willReturn('App\DummyFactory');
+        $resolverProphecy->resolve('@foo')->willReturn(new Reference('foo', BuilderInterface::EXCEPTION_ON_INVALID_REFERENCE));
+        /* @var ResolverInterface $resolver */
+        $resolver = $resolverProphecy->reveal();
+
+        $aliases = [];
+        $foo = new Service('foo.inner', 'App\Dummy', [], [], []);
+        $newFoo = new Service(
+            'bar',
+            $foo->getClass(),
+            $foo->getArguments(),
+            $foo->getAutowiringTypes(),
+            $foo->getTags()
+        );
+        $newNewFoo = new Decoration(
+            new Service(
+                'newnewfoo',
+                $foo->getClass(),
+                $foo->getArguments(),
+                $foo->getAutowiringTypes(),
+                $foo->getTags()
+            ),
+            'foo',
+            'bar'
+        );
+        $services = [
+            'foo' => $newNewFoo,
+            'bar' => $newFoo,
+            'foo.inner' => $foo,
         ];
 
         yield [$content, $resolver, $aliases, $services];

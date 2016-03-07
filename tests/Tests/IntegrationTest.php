@@ -50,7 +50,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         static::$kernel = $kernel;
     }
 
-    public function testRegisterParameters()
+    public function testParametersAreRegistered()
     {
         $expected = [
             'other_config_val_before' => 'http://localhost',
@@ -85,6 +85,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         foreach ($expected as $key => $value) {
             $this->assertEquals($value, static::$app[$key], sprintf('Failed to equality for parameter "%s"', $key));
         }
+    }
+
+    public function testParametersImportedAreRegistered()
+    {
+        $this->assertTrue(static::$app['imported_param']);
     }
 
     public function testDummyServiceIsRegistered()
@@ -156,5 +161,22 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertNotSame(static::$app->make(DummyInterface::class), $service);
 
         $this->assertEquals('yo', $service->getParams()[0]);
+    }
+
+    public function testAnotherDecoratedDummyIsRegistered()
+    {
+        /* @var AnotherDummyService $ddanother_dummy */
+        $ddanother_dummy = static::$app->make('ddummy');
+        /* @var AnotherDummyService $danother_dummy */
+        $danother_dummy = static::$app->make('surprise');
+        /* @var DummyService $danother_dummy */
+        $ddummy = static::$app->make('ddummy.inner');
+
+        $this->assertInstanceOf(AnotherDummyService::class, $ddanother_dummy);
+        $this->assertInstanceOf(AnotherDummyService::class, $danother_dummy);
+        $this->assertInstanceOf(DummyService::class, $ddummy);
+
+        $this->assertSame($danother_dummy, $ddanother_dummy->getParams()[0]);
+        $this->assertSame($ddummy, $danother_dummy->getParams()[0]);
     }
 }

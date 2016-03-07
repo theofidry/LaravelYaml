@@ -45,9 +45,9 @@ final class BuiltParameterResolver implements ParameterResolverInterface
     /**
      * {@inheritdoc}array
      */
-    public function resolve($parameter)
+    public function resolve($value)
     {
-        return $this->resolveValue($parameter, [$parameter => true]);
+        return $this->resolveValue($value);
     }
 
     /**

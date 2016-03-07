@@ -41,16 +41,16 @@ class BuiltParameterResolverTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new BuiltParameterResolver($parameters, $config);
 
-        foreach ($expected as $parameter => $expectedValue) {
-            $actual = $resolver->resolve($parameter);
+        foreach ($expected as $parameterName => $expectedValue) {
+            $actual = $resolver->resolve($parameters[$parameterName]);
             $this->assertEquals(
                 $expectedValue,
                 $actual,
                 sprintf(
                     '"%s" did not match "%s" for parameter "%s"',
                     var_export($actual, true),
-                    var_export($expected[$parameter], true),
-                    $parameter
+                    var_export($expected[$parameterName], true),
+                    $parameterName
                 )
             );
         }
@@ -93,6 +93,8 @@ class BuiltParameterResolverTest extends \PHPUnit_Framework_TestCase
                 'escapedVal1' => '%%dummy%%',
                 'escapedVal2' => '%dummy%%',
                 'escapedVal3' => '%%dummy%',
+                'configValue' => '%locale.default%',
+                'envValue' => '%env.test.value%',
             ],
             [
                 'boolParam' => true,
@@ -113,9 +115,8 @@ class BuiltParameterResolverTest extends \PHPUnit_Framework_TestCase
                 'escapedVal1' => '%%dummy%%',
                 'escapedVal2' => '%dummy%%',
                 'escapedVal3' => '%%dummy%',
-
-                '%locale.default%' => 'en-GB',
-                '%env.test.value%' => 'dummy',
+                'configValue' => 'en-GB',
+                'envValue' => 'DummyEnvValue',
             ]
         ];
     }

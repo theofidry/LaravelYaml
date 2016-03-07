@@ -19,11 +19,15 @@ use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\Exception;
 interface ParameterResolverInterface
 {
     /**
-     * @param string $parameter
+     * @param string $value Parameter value
      *
      * @return mixed
      *
      * @throws Exception
+     *
+     * @example
+     *  ::resolve('%foo%') => 'bar'
+     *  ::resolve("@dummy") => 'dummy' service instance
      */
-    public function resolve($parameter);
+    public function resolve($value);
 }

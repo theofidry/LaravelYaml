@@ -2,7 +2,7 @@
 
 [![Package version](http://img.shields.io/packagist/v/theofidry/laravel-yaml.svg?style=flat-square)](https://packagist.org/packages/theofidry/laravel-yaml)
 [![Build Status](https://img.shields.io/travis/theofidry/LaravelYaml.svg?branch=master&style=flat-square)](https://travis-ci.org/theofidry/LaravelYaml?branch=master)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/0dd96e9b-18b9-47f8-8ae0-762afb740110.svg?style=flat-square)](https://insight.sensiolabs.com/projects/0dd96e9b-18b9-47f8-8ae0-762afb740110)
+[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/71daba3d-2706-4387-9d47-434db443d310.svg?style=flat-square)](https://insight.sensiolabs.com/projects/71daba3d-2706-4387-9d47-434db443d310)
 [![Dependency Status](https://www.versioneye.com/user/projects/56ddab9d4839f70035207c01/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56ddab9d4839f70035207c01)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/theofidry/LaravelYaml.svg?style=flat-square)](https://scrutinizer-ci.com/g/theofidry/LaravelYaml/?branch=master)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/theofidry/LaravelYaml.svg?b=master&style=flat-square)](https://scrutinizer-ci.com/g/theofidry/LaravelYaml/?branch=master)

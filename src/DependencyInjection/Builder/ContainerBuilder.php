@@ -88,11 +88,8 @@ final class ContainerBuilder implements BuilderInterface
     public function addService(ServiceInterface $service)
     {
         if ($service instanceof DecorationInterface) {
-            $inner = $this->services[$service->getDecoration()[0]];
-            $this->services[$service->getDecoration()[1]] = Service::createFromDecoration($inner, $service);
-            $this->services[$service->getDecoration()[0]] = $service;
-
-            return;
+            $this->getAndRebuilderDeprecatedService($service);
+            $service = $this->rebuildServiceWithName($service->getDecorates(), $service);
         }
 
         $this->services[$service->getName()] = $service;
@@ -117,5 +114,30 @@ final class ContainerBuilder implements BuilderInterface
             : $this->aliasesBuilder
         ;
         $aliasesBuilder->build($application);
+    }
+
+    private function getAndRebuilderDeprecatedService(DecorationInterface $service)
+    {
+        $oldDecorated = $this->services[$service->getDecorates()];
+        $newDecorated = $this->rebuildServiceWithName($service->getDecorationInnerName(), $oldDecorated);
+
+        $this->addService($newDecorated);
+    }
+
+    /**
+     * @param string           $name
+     * @param ServiceInterface $service
+     *
+     * @return Service
+     */
+    private function rebuildServiceWithName($name, ServiceInterface $service)
+    {
+        return new Service(
+            $name,
+            $service->getClass(),
+            $service->getArguments(),
+            $service->getAutowiringTypes(),
+            $service->getTags()
+        );
     }
 }

@@ -22,9 +22,14 @@ final class Decoration implements DecorationInterface
     private $service;
 
     /**
-     * @var array<string, string>
+     * @var string
      */
-    private $decoration;
+    private $decorates;
+
+    /**
+     * @var string
+     */
+    private $decorationInnerName;
 
     /**
      * @param ServiceInterface $service
@@ -34,11 +39,11 @@ final class Decoration implements DecorationInterface
     public function __construct(ServiceInterface $service, $decorates, $decorationInnerName = null)
     {
         $this->service = $service;
-
-        if (null === $decorationInnerName) {
-            $decorationInnerName = sprintf('%s.inner', $decorates);
-        }
-        $this->decoration = [$decorates, $decorationInnerName];
+        $this->decorates = $decorates;
+        $this->decorationInnerName = (null === $decorationInnerName) ?
+            sprintf('%s.inner', $service->getName())
+            : $decorationInnerName
+        ;
     }
 
     /**
@@ -46,7 +51,7 @@ final class Decoration implements DecorationInterface
      */
     public function getName()
     {
-        return $this->getDecoration()[0];
+        return $this->service->getName();
     }
 
     /**
@@ -84,8 +89,16 @@ final class Decoration implements DecorationInterface
     /**
      * {@inheritdoc}
      */
-    public function getDecoration()
+    public function getDecorates()
     {
-        return $this->decoration;
+        return $this->decorates;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDecorationInnerName()
+    {
+        return $this->decorationInnerName;
     }
 }

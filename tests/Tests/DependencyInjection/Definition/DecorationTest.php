@@ -21,36 +21,65 @@ use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
  */
 class DecorationTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstruct()
+    public function testConstructWithDefaultValues()
     {
+        $arg = new \stdClass();
+        $type = new \stdClass();
+        $tag = new \stdClass();
+
         $serviceProphecy = $this->prophesize(ServiceInterface::class);
-        $serviceProphecy->getClass()->shouldBeCalledTimes(2);
+        $serviceProphecy->getName()->shouldBeCalledTimes(2);
+        $serviceProphecy->getName()->willReturn('bar');
+        $serviceProphecy->getClass()->shouldBeCalledTimes(1);
         $serviceProphecy->getClass()->willReturn('App\Dummy');
-        $serviceProphecy->getArguments()->shouldBeCalledTimes(2);
-        $serviceProphecy->getArguments()->willReturn([]);
-        $serviceProphecy->getAutowiringTypes()->shouldBeCalledTimes(2);
-        $serviceProphecy->getAutowiringTypes()->willReturn([]);
-        $serviceProphecy->getTags()->shouldBeCalledTimes(2);
-        $serviceProphecy->getTags()->willReturn([]);
+        $serviceProphecy->getArguments()->shouldBeCalledTimes(1);
+        $serviceProphecy->getArguments()->willReturn([$arg]);
+        $serviceProphecy->getAutowiringTypes()->shouldBeCalledTimes(1);
+        $serviceProphecy->getAutowiringTypes()->willReturn([$type]);
+        $serviceProphecy->getTags()->shouldBeCalledTimes(1);
+        $serviceProphecy->getTags()->willReturn([$tag]);
         /* @var ServiceInterface $service */
         $service = $serviceProphecy->reveal();
 
-        $factory = new Decoration($service, 'foo', null);
+        $decoration = new Decoration($service, 'foo', null);
 
-        $this->assertEquals('foo', $factory->getName());
-        $this->assertEquals('App\Dummy', $factory->getClass());
-        $this->assertEquals([], $factory->getArguments());
-        $this->assertEquals([], $factory->getAutowiringTypes());
-        $this->assertEquals([], $factory->getTags());
-        $this->assertEquals(['foo', 'foo.inner'], $factory->getDecoration());
+        $this->assertEquals('bar', $decoration->getName());
+        $this->assertEquals('App\Dummy', $decoration->getClass());
+        $this->assertSame([$arg], $decoration->getArguments());
+        $this->assertSame([$type], $decoration->getAutowiringTypes());
+        $this->assertSame([$tag], $decoration->getTags());
+        $this->assertEquals('foo', $decoration->getDecorates());
+        $this->assertEquals('bar.inner', $decoration->getDecorationInnerName());
+    }
 
-        $factory = new Decoration($service, 'foo', 'bar');
+    public function testConstructWithDecorationInnerName()
+    {
+        $arg = new \stdClass();
+        $type = new \stdClass();
+        $tag = new \stdClass();
 
-        $this->assertEquals('foo', $factory->getName());
-        $this->assertEquals('App\Dummy', $factory->getClass());
-        $this->assertEquals([], $factory->getArguments());
-        $this->assertEquals([], $factory->getAutowiringTypes());
-        $this->assertEquals([], $factory->getTags());
-        $this->assertEquals(['foo', 'bar'], $factory->getDecoration());
+        $serviceProphecy = $this->prophesize(ServiceInterface::class);
+        $serviceProphecy->getName()->shouldBeCalledTimes(1);
+        $serviceProphecy->getName()->willReturn('bar');
+        $serviceProphecy->getClass()->shouldBeCalledTimes(1);
+        $serviceProphecy->getClass()->willReturn('App\Dummy');
+        $serviceProphecy->getArguments()->shouldBeCalledTimes(1);
+        $serviceProphecy->getArguments()->willReturn([$arg]);
+        $serviceProphecy->getAutowiringTypes()->shouldBeCalledTimes(1);
+        $serviceProphecy->getAutowiringTypes()->willReturn([$type]);
+        $serviceProphecy->getTags()->shouldBeCalledTimes(1);
+        $serviceProphecy->getTags()->willReturn([$tag]);
+        /* @var ServiceInterface $service */
+        $service = $serviceProphecy->reveal();
+
+        $decoration = new Decoration($service, 'foo', 'booze');
+
+        $this->assertEquals('bar', $decoration->getName());
+        $this->assertEquals('App\Dummy', $decoration->getClass());
+        $this->assertSame([$arg], $decoration->getArguments());
+        $this->assertSame([$type], $decoration->getAutowiringTypes());
+        $this->assertSame([$tag], $decoration->getTags());
+        $this->assertEquals('foo', $decoration->getDecorates());
+        $this->assertEquals('booze', $decoration->getDecorationInnerName());
     }
 }

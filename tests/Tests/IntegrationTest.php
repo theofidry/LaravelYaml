@@ -12,9 +12,12 @@
 namespace Fidry\LaravelYaml\Tests;
 
 use Fidry\LaravelYaml\Test\AnotherDummyService;
+use Fidry\LaravelYaml\Test\Bar;
+use Fidry\LaravelYaml\Test\Booze;
 use Fidry\LaravelYaml\Test\DummyFactory;
 use Fidry\LaravelYaml\Test\DummyInterface;
 use Fidry\LaravelYaml\Test\DummyService;
+use Fidry\LaravelYaml\Test\Foo;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelInterface;
 use Illuminate\Contracts\Foundation\Application;
 
@@ -100,7 +103,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     public function testFooServiceIsRegistered()
     {
-        $this->assertSame(static::$app->make('foo'), static::$app->make('dummy'));
+        $this->assertSame(static::$app->make('dudu'), static::$app->make('dummy'));
     }
 
     public function testAnotherDummyServiceIsRegistered()
@@ -166,18 +169,19 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     public function testAnotherDecoratedDummyIsRegistered()
     {
-        /* @var AnotherDummyService $ddanother_dummy */
-        $ddanother_dummy = static::$app->make('ddummy');
-        /* @var AnotherDummyService $danother_dummy */
-        $danother_dummy = static::$app->make('surprise');
-        /* @var DummyService $danother_dummy */
-        $ddummy = static::$app->make('ddummy.inner');
+        /* @var AnotherDummyService $foo */
+        $foo = static::$app->make('foo');
+        /* @var AnotherDummyService $surprise */
+        $surprise = static::$app->make('surprise');
+        /* @var AnotherDummyService $barInner */
+        $barInner = static::$app->make('bar.inner');
 
-        $this->assertInstanceOf(AnotherDummyService::class, $ddanother_dummy);
-        $this->assertInstanceOf(AnotherDummyService::class, $danother_dummy);
-        $this->assertInstanceOf(DummyService::class, $ddummy);
+        $this->assertInstanceOf(Booze::class, $foo);
+        $this->assertInstanceOf(Bar::class, $surprise);
+        $this->assertInstanceOf(Foo::class, $barInner);
 
-        $this->assertSame($danother_dummy, $ddanother_dummy->getParams()[0]);
-        $this->assertSame($ddummy, $danother_dummy->getParams()[0]);
+        $this->assertSame($surprise, $foo->getParams()[0]);
+        $this->assertSame($barInner, $surprise->getParams()[0]);
+        $this->assertCount(0, $barInner->getParams());
     }
 }

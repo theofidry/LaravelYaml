@@ -53,6 +53,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
     public function testParametersAreRegistered()
     {
         $expected = [
+            'null_param' => null,
             'other_config_val_before' => 'http://localhost',
             'env_val' => 'http://localhost',
             'true_param' => true,

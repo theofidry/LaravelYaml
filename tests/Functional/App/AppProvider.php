@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the LaravelYaml package.
  *
  * (c) Théo FIDRY <theo.fidry@gmail.com>
@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Fidry\LaravelYaml\Functional\App\Providers;
+namespace Fidry\LaravelYaml\Functional\App;
 
 use Fidry\LaravelYaml\Test\AnotherDummyService;
 use Fidry\LaravelYaml\Test\DummyInterface;

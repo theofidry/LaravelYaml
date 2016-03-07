@@ -12,6 +12,7 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Extension;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
+use Fidry\LaravelYaml\FileLoader\FileLoaderInterface;
 use Fidry\LaravelYaml\FileLoader\Yaml\YamlFileLoader;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\Config\FileLocator;
@@ -21,7 +22,6 @@ use Symfony\Component\Config\FileLocator;
  */
 final class DefaultExtension implements ExtensionInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -29,15 +29,28 @@ final class DefaultExtension implements ExtensionInterface
     {
         $rootDir = new FileLocator(resource_path('providers'));
         $loader = new YamlFileLoader($container, $rootDir);
-        $loader
-            ->load('parameters.yml')
-            ->load('services.yml')
-        ;
 
+        $this
+            ->loadResourceIfExist($loader, 'parameters.yml')
+            ->loadResourceIfExist($loader, 'services.yml')
+            ->loadResourceIfExist($loader, sprintf('parameters_%s.yml', App::environment()))
+        ;
+    }
+
+    /**
+     * @param FileLoaderInterface $loader
+     * @param string              $resource
+     *
+     * @return $this
+     */
+    private function loadResourceIfExist(FileLoaderInterface $loader, $resource)
+    {
         try {
-            $loader->load(sprintf('parameters_%s.yml', App::environment()));
+            $loader->load($resource);
         } catch (\InvalidArgumentException $exception) {
             // Ignore error as is an optional file
         }
+
+        return $this;
     }
 }

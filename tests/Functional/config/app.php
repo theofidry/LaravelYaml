@@ -25,7 +25,7 @@ return [
         Illuminate\Filesystem\FilesystemServiceProvider::class,
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         \Fidry\LaravelYaml\Provider\DefaultExtensionProvider::class,
-//        \Fidry\LaravelYaml\Functional\App\Providers\AppProvider::class,
+//        \Fidry\LaravelYaml\Functional\App\AppProvider::class,
     ],
     'aliases' => [],
 ];

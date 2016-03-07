@@ -2,6 +2,7 @@ imports:
     - { resource: 'parameters_imported.yml' }
 
 parameters:
+    null_param: ~
     other_config_val_before: %env_val%
     env_val: %app.url%
     true_param: true

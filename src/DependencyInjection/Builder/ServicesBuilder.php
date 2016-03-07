@@ -12,7 +12,6 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Builder;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\Instantiator\ServiceInstantiator;
-use Fidry\LaravelYaml\DependencyInjection\Definition\DecorationInterface;
 use Fidry\LaravelYaml\DependencyInjection\Definition\ServiceInterface;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BaseReferenceResolver;
 use Fidry\LaravelYaml\DependencyInjection\Resolver\BuiltParameterResolver;

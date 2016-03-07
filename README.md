@@ -66,7 +66,7 @@ public function register()
 You can use [Composer](https://getcomposer.org/) to install the bundle to your project:
 
 ```bash
-composer require --dev theofidry/laravel-yaml
+composer require theofidry/laravel-yaml
 ```
 
 Then, add the provider [`Fidry\LaravelYaml\Provider\DefaultExtensionProvider`](src/Provider/DefaultExtensionProvider.php) to your application providers:

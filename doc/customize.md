@@ -33,12 +33,13 @@ Then the file `resouces/providers/imported_parameters.yml` will be loaded with
 
 ### Use your own provider
 
-For an easy install, this library comes with `Fidry\LaravelYaml\Provider\DefaultExtensionProvider`
+For an easy install, this library comes with
+[`Fidry\LaravelYaml\Provider\DefaultExtensionProvider`](src/Provider/DefaultExtensionProvider.php)
 providing the default directory structure. However you are free to create your
 own provider to load any files you want. For that, create your `Extension`,
 responsible for loading your files:
 
-```
+```php
 namespace App\DependencyInjection;
 
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
@@ -61,8 +62,10 @@ final class AppExtension implements ExtensionInterface
 }
 ```
 
-Then have a provider extending `AbstractExtensionProvider` (recommended) or
-implementing the `ProviderInterface`to register your extension:
+Then have a provider extending
+[`AbstractExtensionProvider`](src/Provider/AbstractExtensionProvider.php)
+(recommended) or implementing the [`ProviderInterface`](src/Provider/ProviderInterface.php)
+to register your extension:
 
 ```php
 namespace App\Providers;

@@ -150,7 +150,7 @@ kept around to be able to reference it in the new one. This configuration
 replaces `foo` with a new one, but keeps a reference of the old one as
 `bar.inner`:
 
-```
+```yaml
 bar:
     class: stdClass
     decorates: foo
@@ -169,7 +169,7 @@ decorators on the same service (they need to have different generated inner ids)
 
 You can change the inner service name if you want to:
 
-```
+```yaml
 bar:
     class: stdClass
     decorates: foo

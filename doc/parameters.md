@@ -1,8 +1,8 @@
 # Parameters
 
-1. [YAML vs PHP](doc/parameters.md#yaml-vs-php)
+1. [YAML vs PHP](parameters.md#yaml-vs-php)
 1. [Refering to another value](#refering-to-another-value)
-1. [Refering to an environment value](#refering-to-environment-value)
+1. [Refering to an environment value](#refering-to-an-environment-value)
 1. [Overriding values](#overriding-values)
 1. [Environment dependent parameters](#environment-dependent-parameters)
 
@@ -11,7 +11,7 @@
 Parameters are simply configuration values. Instead of being declared in
 `config/*.php`, they can be declared in your YAML files:
 
-```
+```yaml
 parameters:
     fetch: 8,
     default: mysql

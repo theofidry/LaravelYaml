@@ -50,16 +50,16 @@ public function register()
 1. [Everything about parameters](doc/parameters.md)
   1. [YAML vs PHP](doc/parameters.md#yaml-vs-php)
   1. [Refering to another value](doc/parameters.md#refering-to-another-value)
-  1. [Refering to an environment value](doc/parameters.md#refering-to-environment-value)
+  1. [Refering to an environment value](doc/parameters.md#refering-to-an-environment-value)
   1. [Overriding values](doc/parameters.md#overriding-values)
   1. [Environment dependent parameters](doc/parameters.md#environment-dependent-parameters)
-1. [Service declaration](src/services.md)
-  1. [Simple services](src/services.md#simple-services)
-  1. [Factories](src/services.md#factories)
-  1. [Decorating services](src/services.md#decorating-services)
-1. [Custom file organisation](src/customize.md)
-  1. [Import other files](src/customize.md#import-other-files)
-  1. [Use your own provider](src/customize.md#use-your-own-provider)
+1. [Service declaration](doc/services.md)
+  1. [Simple services](doc/services.md#simple-services)
+  1. [Factories](doc/services.md#factories)
+  1. [Decorating services](doc/services.md#decorating-services)
+1. [Custom file organisation](doc/customize.md)
+  1. [Import other files](doc/customize.md#import-other-files)
+  1. [Use your own provider](doc/customize.md#use-your-own-provider)
 
 ## Install
 
@@ -69,8 +69,7 @@ You can use [Composer](https://getcomposer.org/) to install the bundle to your p
 composer require --dev theofidry/laravel-yaml
 ```
 
-Then, add the provider `Fidry\LaravelYaml\Provider\DefaultExtensionProvider` to
-your application providers:
+Then, add the provider [`Fidry\LaravelYaml\Provider\DefaultExtensionProvider`](src/Provider/DefaultExtensionProvider.php) to your application providers:
 
 ```php
 <?php
@@ -85,7 +84,7 @@ your application providers:
 ## Usage
 
 See how to declare and use [parameters](doc/parameters.md) and
-[services](src/services.md)!
+[services](doc/services.md)!
 
 By convention, you should have the following structure:
 
@@ -113,6 +112,8 @@ library will try to load the `parameters_testing.yml` or `parameters_production.
 file.
 
 Then `services.yml` should contain all your service definitions.
+
+[See more.](#documentation)
 
 ## Credits
 

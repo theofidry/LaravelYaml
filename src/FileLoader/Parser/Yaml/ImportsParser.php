@@ -14,8 +14,6 @@ namespace Fidry\LaravelYaml\FileLoader\Parser\Yaml;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\Exception\FileLoader\InvalidArgumentException;
 use Fidry\LaravelYaml\FileLoader\Parser\ParserInterface;
-use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ResolverInterface;
-use Fidry\LaravelYaml\FileLoader\Parser\Resolver\ServiceResolver;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>

@@ -17,8 +17,9 @@ namespace Fidry\LaravelYaml\DependencyInjection\Definition;
 interface FactoryInterface extends ServiceInterface
 {
     /**
-     * @return array<string|Reference, string> The first value is the class or reference to the factory service and the
-     *                                         second argument is the method used to instantiate the service
+     * @return array<string|Reference> The first value (string or Reference) is the class or reference to the factory
+     *                                 service and the second argument (string) is the method used to instantiate the
+     *                                 service
      */
     public function getFactory();
 }

@@ -106,9 +106,8 @@ final class ServicesBuilder implements BuilderInterface
         ServiceInstantiator $instantiator,
         Application $application
     ) {
-        $serviceId = ($service instanceof DecorationInterface) ? $service->getDecoration()[0] : $service->getName();
         $application->singleton(
-            $serviceId,
+            $service->getName(),
             function () use ($instantiator, $service) {
                 return $instantiator->create($service);
             }

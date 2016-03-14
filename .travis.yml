@@ -7,24 +7,35 @@ cache:
         - $HOME/.composer/cache/files
 
 php:
-    - 5.6
-    - 7.0
+    - '5.6'
+    - '7.0'
     - nightly
     - hhvm
 
 matrix:
+    fast_finish: true
+    include:
+        - php: '5.6'
+          env: COMPOSER_FLAGS="--prefer-lowest"
+        - php: '5.6'
+          env: LARAVEL_VERSION=5.1.*
+        - php: '5.6'
+          env: LARAVEL_VERSION=5.2.*
     allow_failures:
         - php: nightly
         - php: hhvm
-    fast_finish: true
 
 before_install:
-    - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ]);
+    - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ] &&  [ -z "LARAVEL_VERSION"]);
         then wget https://scrutinizer-ci.com/ocular.phar;
-      fi
+      fi;
+    - if [ "$SYMFONY_VERSION" != "" ]; then
+        composer require "laravel/framework:${LARAVEL_VERSION}" --no-update;
+      fi;
+    - rm -rf tests/Functional/cache/*
 
 install:
-    - composer install --prefer-dist
+    - composer update --prefer-dist $COMPOSER_FLAGS
 
 script:
     - bin/phpunit -c phpunit.xml.dist --coverage-text
@@ -32,7 +43,7 @@ script:
 after_script:
     - if ([ "hhvm" != "$TRAVIS_PHP_VERSION" ] && [ "nightly" != "$TRAVIS_PHP_VERSION" ]); then
         php ocular.phar code-coverage:upload --format=php-clover coverage.xml;
-      fi
+      fi;
 
 notifications:
     email: false

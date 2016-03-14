@@ -119,7 +119,7 @@ parameters:
 Provided `config('default.locale')` gives you `'en'`, then `app('foo')` will give
 you `'en'` as well.
 
-### Refering to an environment value
+### Referring to an environment value
 
 It also works with environment variables: if you have defined the environment
 variable `APP_URL=http://localhost` and `APP_ENV=production`, then `%app.url%`
@@ -147,7 +147,7 @@ Then the value of `bar` will be `'http://example.com'` instead of
 
 ### Environment dependent parameters
 
-You can also overide previously defined parameters values. For example if you
+You can also override previously defined parameters values. For example if you
 have:
 
 ```yaml

@@ -55,7 +55,7 @@ public function register()
 }
 ```
 
-Which is as you can see much more verbose. There is also a number of subtilities:
+Which is as you can see much more verbose. There is also a number of subtleties:
 
 - `%app.locale%` refers to a parameter value, but it can be a parameter declared
   under the `parameters` namespace, a Laravel configuration value or an
@@ -108,7 +108,28 @@ services:
 
     newsletter_manager:
         class:   NewsletterManager
-        factory: ['@newsletter_manager.factory'"', createNewsletterManager]
+        factory: ['@newsletter_manager.factory', createNewsletterManager]
+```
+
+Which would be the PHP equivalent of:
+
+
+```
+# app/Providers/AppServiceProvider.php
+
+public function register()
+{
+    // ...
+    $this->app->singleton(
+        'newsletter_manager',
+        function ($app) {
+            $factory = $app['newsletter_manager.factory'];
+
+            return $factory->createNewsletterManager();
+        }
+    );
+    $this->app->bind(NewsletterManager::class, 'dummy');
+}
 ```
 
 If you need to pass arguments to the factory method, you can use the `arguments`
@@ -177,3 +198,6 @@ bar:
     arguments:
         - @bar.wooz
 ```
+
+There is no real equivalent of that with Laravel providers and this is made possible by the
+way this library works.

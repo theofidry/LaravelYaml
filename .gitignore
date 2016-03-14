@@ -7,3 +7,4 @@ composer.lock
 bin/php-parse
 bin/phpunit
 bin/psysh
+bin/classpreloader.php

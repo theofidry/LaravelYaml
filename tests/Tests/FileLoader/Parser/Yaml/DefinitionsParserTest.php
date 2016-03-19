@@ -255,21 +255,6 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
                 'services' => [
                     'foo' => [
                         'class' => 'App\Dummy',
-                        'tags' => [
-                            [
-                                'name' => 'foo',
-                                'attribute' => ['not scalar'],
-                            ]
-                        ],
-                    ],
-                ],
-            ]
-        ];
-        yield [
-            [
-                'services' => [
-                    'foo' => [
-                        'class' => 'App\Dummy',
                         'autowiringTypes' => 'not array',
                     ],
                 ],

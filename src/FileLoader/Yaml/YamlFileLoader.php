@@ -57,14 +57,9 @@ final class YamlFileLoader implements FileLoaderInterface
     private $parametersParser;
 
     /**
-     * @var YamlParser
+     * @var YamlSingleFileLoader
      */
-    private $yamlParser;
-
-    /**
-     * @var YamlValidator
-     */
-    private $yamlValidator;
+    private $singleFileLoader;
 
     public function __construct(
         ContainerBuilder $container,
@@ -81,8 +76,10 @@ final class YamlFileLoader implements FileLoaderInterface
         $this->definitionsParser = (null === $definitionsParser) ? new DefinitionsParser() : $definitionsParser;
         $this->parametersParser = (null === $parametersParser) ? new ParametersParser() : $parametersParser;
         $this->importsParser = (null === $importsParser) ? new ImportsParser() : $importsParser;
-        $this->yamlParser = (null === $yamlParser) ? new YamlParser() : $yamlParser;
-        $this->yamlValidator = (null === $yamlValidator) ? new YamlValidator() : $yamlValidator;
+
+        $yamlParser = (null === $yamlParser) ? new YamlParser() : $yamlParser;
+        $yamlValidator = (null === $yamlValidator) ? new YamlValidator() : $yamlValidator;
+        $this->singleFileLoader = new YamlSingleFileLoader($yamlParser, $yamlValidator);
     }
 
     /**
@@ -101,7 +98,7 @@ final class YamlFileLoader implements FileLoaderInterface
     {
         /* @var string|null $path */
         $path = $this->fileLocator->locate($resource, null, true);
-        $content = $this->loadFile($path);
+        $content = $this->singleFileLoader->loadFile($path);
 
         $imports = $this->importsParser->parse($this->container, $content, $resource);
         foreach ($imports as $importedResource) {
@@ -111,32 +108,5 @@ final class YamlFileLoader implements FileLoaderInterface
         $this->definitionsParser->parse($this->container, $content, $resource);
 
         return $this;
-    }
-
-    /**
-     * @param string $filePath
-     *
-     * @return array The file content
-     * @throws InvalidArgumentException
-     */
-    private function loadFile($filePath)
-    {
-        if (false === stream_is_local($filePath)) {
-            throw new InvalidArgumentException(sprintf('This is not a local file "%s".', $filePath));
-        }
-
-        if (false === file_exists($filePath)) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $filePath));
-        }
-
-        try {
-            $configuration = $this->yamlParser->parse(file_get_contents($filePath));
-        } catch (ParseException $exception) {
-            throw new InvalidArgumentException(
-                sprintf('The file "%s" does not contain valid YAML.', $filePath), 0, $exception
-            );
-        }
-
-        return $this->yamlValidator->validate($configuration, $filePath);
     }
 }

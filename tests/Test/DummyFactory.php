@@ -16,25 +16,17 @@ namespace Fidry\LaravelYaml\Test;
  */
 class DummyFactory
 {
-    /**
-     * @var DummyService
-     */
-    private $dummy;
-
-    public function __construct(DummyService $dummy)
+    public function __construct(DummyInterface $dummy)
     {
-        $this->dummy = $dummy;
     }
 
     /**
      * @param array ...$args
      *
-     * @return AnotherDummyService
+     * @return AnotherDummy
      */
     public function create(...$args)
     {
-        $args[] = $this->dummy;
-
-        return new AnotherDummyService(...$args);
+        return new AnotherDummy(...$args);
     }
 }

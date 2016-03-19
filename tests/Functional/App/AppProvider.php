@@ -11,7 +11,7 @@
 
 namespace Fidry\LaravelYaml\Functional\App;
 
-use Fidry\LaravelYaml\Test\AnotherDummyService;
+use Fidry\LaravelYaml\Test\AnotherDummy;
 use Fidry\LaravelYaml\Test\DummyInterface;
 use Fidry\LaravelYaml\Test\DummyService;
 use Illuminate\Contracts\Foundation\Application;
@@ -52,10 +52,10 @@ final class AppProvider extends ServiceProvider
 
                 $dummy = $app['dummy'];
 
-                return new AnotherDummyService($serviceParam, $inexistingService, $dummy);
+                return new AnotherDummy($serviceParam, $inexistingService, $dummy);
             }
         );
-        $this->app->bind(AnotherDummyService::class, 'another_dummy');
+        $this->app->bind(AnotherDummy::class, 'another_dummy');
         $this->app->bind(DummyInterface::class, 'another_dummy');
         $this->app->tag('another_dummy', ['dummies', 'random_tag']);
     }

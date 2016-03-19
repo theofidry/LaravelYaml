@@ -14,15 +14,20 @@ namespace Fidry\LaravelYaml\Test;
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-class DummyStaticFactory
+class AnotherDummy
 {
     /**
-     * @param array ...$args
-     *
-     * @return AnotherDummy
+     * @var string
      */
-    public static function create(...$args)
+    private $params;
+
+    public function __construct(...$params)
     {
-        return new AnotherDummy(...$args);
+        $this->params = $params;
+    }
+
+    public function getArgs()
+    {
+        return $this->params;
     }
 }

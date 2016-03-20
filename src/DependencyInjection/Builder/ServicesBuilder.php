@@ -66,13 +66,17 @@ final class ServicesBuilder implements BuilderInterface
         $this->referenceResolver = (null === $referenceResolver) ? new BaseReferenceResolver() : $referenceResolver;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function build(Application $application)
     {
         try {
             $parameterResolver = $this->getParameterResolver($application);
             $instantiator = new ServiceInstantiator($parameterResolver, $this->referenceResolver, $application);
+            $serviceBuilder = new ServiceBuilder($instantiator);
             foreach ($this->services as $service) {
-                $this->buildService($service, $instantiator, $application);
+                $serviceBuilder->build($service, $application);
             }
 
             return $this->parameters;
@@ -98,35 +102,5 @@ final class ServicesBuilder implements BuilderInterface
         $config = $application->make(ConfigRepository::class);
 
         return new BuiltParameterResolver($this->parameters, $config);
-    }
-
-    private function buildService(
-        ServiceInterface $service,
-        ServiceInstantiator $instantiator,
-        Application $application
-    ) {
-        $application->singleton(
-            $service->getName(),
-            function () use ($instantiator, $service) {
-                return $instantiator->create($service);
-            }
-        );
-        $application->bind($service->getClass(), $service->getName());
-        $this->bindAutowiringTypes($service, $application);
-        $this->tagService($service, $application);
-    }
-
-    private function bindAutowiringTypes(ServiceInterface $service, Application $application)
-    {
-        foreach ($service->getAutowiringTypes() as $binding) {
-            $application->bind($binding, $service->getName());
-        }
-    }
-
-    private function tagService(ServiceInterface $service, Application $application)
-    {
-        if (count($service->getTags()) !== 0) {
-            $application->tag($service->getName(), array_keys($service->getTags()));
-        }
     }
 }

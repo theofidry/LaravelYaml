@@ -103,7 +103,7 @@ final class ServiceParser
             $fileName
         );
 
-        $container->addService($serviceDefinition);
+        $container->registerService($serviceDefinition);
     }
     
     private function createService($id, $class, array $arguments, array $autowiringTypes, array $tags, array $service, $fileName)

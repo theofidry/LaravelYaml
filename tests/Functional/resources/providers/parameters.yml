@@ -25,3 +25,5 @@ parameters:
             somethingElseWithWeirdName: true
             foo:
                 - bar
+    expression_param: '@=constant("\DateTime::ATOM")'
+

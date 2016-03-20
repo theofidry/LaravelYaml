@@ -12,13 +12,7 @@
 namespace Fidry\LaravelYaml\Tests;
 
 use Fidry\LaravelYaml\Test\AnotherDummy;
-use Fidry\LaravelYaml\Test\Bar;
-use Fidry\LaravelYaml\Test\Booze;
 use Fidry\LaravelYaml\Test\Dummy;
-use Fidry\LaravelYaml\Test\DummyFactory;
-use Fidry\LaravelYaml\Test\DummyInterface;
-use Fidry\LaravelYaml\Test\DummyService;
-use Fidry\LaravelYaml\Test\Foo;
 use Fidry\LaravelYaml\Test\SimpleDummy;
 use Fidry\LaravelYaml\Test\UnwirableDummy;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelInterface;
@@ -87,6 +81,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'service_param' => 'foobar',
+            'expression_param' => \DateTime::ATOM,
         ];
 
         foreach ($expected as $key => $value) {
@@ -255,5 +250,11 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($dummyForBar, $surprise->getInterfaceArg());
         $this->assertSame($barInner, $surprise->getArgs()[0]);
+    }
+
+    public function testServiceRegisteredInProvidersCanUseTheLibraryServices()
+    {
+        $dummies = static::$app->tagged('dummies');
+        $this->assertSame($dummies, static::$app->make('dummies_chain')->getDummies());
     }
 }

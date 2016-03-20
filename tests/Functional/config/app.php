@@ -26,6 +26,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         \Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
         \Fidry\LaravelYaml\Functional\App\ExtensionProvider::class,
+        \Fidry\LaravelYaml\Functional\App\RegularServiceProvider::class,
 //        \Fidry\LaravelYaml\Functional\App\AppProvider::class,
     ],
     'aliases' => [],

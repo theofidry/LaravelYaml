@@ -104,12 +104,14 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(SimpleDummy::class, static::$app->make('simple_dummy'));
     }
 
-    /**
-     * @expectedException \ErrorException
-     */
     public function testUnwirableServiceCannotBeAutowired()
     {
-        static::$app->make('unwirable_dummy');
+        try {
+            static::$app->make('unwirable_dummy');
+            $this->fail('Expected exception to be thrown');
+        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+        }
     }
 
     public function testUnwirableServiceIsRegistered()

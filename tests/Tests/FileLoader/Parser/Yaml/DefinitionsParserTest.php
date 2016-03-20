@@ -14,7 +14,6 @@ namespace Fidry\LaravelYaml\Tests\FileLoader\Parser\Yaml;
 use Fidry\LaravelYaml\DependencyInjection\Builder\BuilderInterface;
 use Fidry\LaravelYaml\DependencyInjection\Builder\ContainerBuilder;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Alias;
-use Fidry\LaravelYaml\DependencyInjection\Definition\Decoration;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Factory;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Reference;
 use Fidry\LaravelYaml\DependencyInjection\Definition\Service;
@@ -24,6 +23,14 @@ use Prophecy\Argument;
 
 /**
  * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\DefinitionsParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\AliasParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\AutowiringTypesParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\ClassParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\DecorationParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\DefinitionParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\FactoryParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\ServiceParser
+ * @covers Fidry\LaravelYaml\FileLoader\Parser\Yaml\Util\TagsParser
  *
  * @author             Théo FIDRY <theo.fidry@gmail.com>
  */
@@ -244,21 +251,6 @@ class DefinitionsParserTest extends \PHPUnit_Framework_TestCase
                         'tags' => [
                             [
                                 'foo' => 'bar'  // do not have "name" key
-                            ]
-                        ],
-                    ],
-                ],
-            ]
-        ];
-        yield [
-            [
-                'services' => [
-                    'foo' => [
-                        'class' => 'App\Dummy',
-                        'tags' => [
-                            [
-                                'name' => 'foo',
-                                'attribute' => ['not scalar'],
                             ]
                         ],
                     ],

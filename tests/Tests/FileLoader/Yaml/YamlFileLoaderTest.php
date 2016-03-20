@@ -24,6 +24,7 @@ use Symfony\Component\Yaml\Parser;
 
 /**
  * @covers Fidry\LaravelYaml\FileLoader\Yaml\YamlFileLoader
+ * @covers Fidry\LaravelYaml\FileLoader\Yaml\YamlSingleFileLoader
  *
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */

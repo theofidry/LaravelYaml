@@ -3,6 +3,7 @@
 1. [YAML vs PHP](parameters.md#yaml-vs-php)
 1. [Refering to another value](#refering-to-another-value)
 1. [Refering to an environment value](#refering-to-an-environment-value)
+1. [Refering to constants](#refering-to-constants)
 1. [Overriding values](#overriding-values)
 1. [Environment dependent parameters](#environment-dependent-parameters)
 
@@ -124,6 +125,16 @@ you `'en'` as well.
 It also works with environment variables: if you have defined the environment
 variable `APP_URL=http://localhost` and `APP_ENV=production`, then `%app.url%`
 and `%app.env%` will give you `'http://localhost'` and `'production'`.
+
+### Refering to constants
+
+Sometimes you need to pass a constant value, for example the value of `\DateTime::ATOM`. To achieve that, you must make
+use of [Symfony Expression Language](http://symfony.com/doc/current/components/expression_language/index.html):
+
+```yaml
+parameters:
+    datetime_format: '@=constant("\DateTime::ATOM")'
+```
 
 ### Overriding values
 

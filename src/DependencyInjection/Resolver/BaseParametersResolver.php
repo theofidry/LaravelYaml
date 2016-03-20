@@ -12,9 +12,12 @@
 namespace Fidry\LaravelYaml\DependencyInjection\Resolver;
 
 use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\ParameterCircularReferenceException;
+use Fidry\LaravelYaml\Exception\DependencyInjection\Resolver\RuntimeException;
 use Fidry\LaravelYaml\Exception\Exception;
 use Fidry\LaravelYaml\Exception\ParameterNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * @author Théo FIDRY <theo.fidry@gmail.com>
@@ -22,14 +25,19 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 final class BaseParametersResolver implements ParametersResolverInterface
 {
     /**
+     * @var ConfigRepository
+     */
+    private $config;
+
+    /**
      * @var string
      */
     private $defaultValue;
 
     /**
-     * @var ConfigRepository
+     * @var ExpressionLanguage|null
      */
-    private $config;
+    private $expressionLanguage;
 
     /**
      * @var array|null
@@ -85,6 +93,10 @@ final class BaseParametersResolver implements ParametersResolverInterface
 
         if (is_array($value)) {
             return $this->resolveArray($value, $resolving);
+        }
+        
+        if ($value instanceof Expression) {
+            return $this->getExpressionLanguage()->evaluate($value, array('container' => $this));
         }
 
         if (is_string($value)) {
@@ -179,5 +191,21 @@ final class BaseParametersResolver implements ParametersResolverInterface
         }
 
         throw new ParameterNotFoundException(sprintf('No parameter "%s" found', $key));
+    }
+
+    /**
+     * @return ExpressionLanguage
+     * @throws RuntimeException
+     */
+    private function getExpressionLanguage()
+    {
+        if (null === $this->expressionLanguage) {
+            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+                throw new RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
+            }
+            $this->expressionLanguage = new ExpressionLanguage();
+        }
+
+        return $this->expressionLanguage;
     }
 }

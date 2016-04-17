@@ -61,8 +61,10 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             'application.class' => 'Fidry\LaravelYaml\Test\Foundation\ApplicationMock',
             'config_value' => 'en',
             'other_config_val' => 'Fidry\LaravelYaml\Test\Foundation\ApplicationMock',
-            'fooo' => '%%bar%%',
-            'fooobar' => '%%%bar2%%%%',
+            'hello' => 'world',
+            'escaped_percent_sign' => '%%hello%%',
+            'escaped_percent_sign_with_parameter' => '%%world%%%',
+            'double_escaped_percent_sign' => '%%%%hello%%%%',
             'lang' => [
                 'en',
                 'fr',
@@ -82,6 +84,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             ],
             'service_param' => 'foobar',
             'expression_param' => \DateTime::ATOM,
+            'composite1' => 'hello world!',
+            'composite2' => 2000,
+            'composite_parameter' => 'hey! hello world!.2000',
         ];
 
         foreach ($expected as $key => $value) {

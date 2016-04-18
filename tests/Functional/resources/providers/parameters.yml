@@ -10,8 +10,10 @@ parameters:
     application.class: Fidry\LaravelYaml\Functional\App\Application
     config_value: %app.locale%
     other_config_val: %application.class%
-    fooo: %%bar%%
-    fooobar: %%%bar2%%%%
+    hello: world
+    escaped_percent_sign: %%hello%%
+    escaped_percent_sign_with_parameter: %%%hello%%%%
+    double_escaped_percent_sign: %%%%hello%%%%
     lang:
         - en
         - fr
@@ -26,4 +28,6 @@ parameters:
             foo:
                 - bar
     expression_param: '@=constant("\DateTime::ATOM")'
-
+    composite1: 'hello world!'
+    composite2: 2000
+    composite_parameter: "hey! %composite1%.%composite2%"

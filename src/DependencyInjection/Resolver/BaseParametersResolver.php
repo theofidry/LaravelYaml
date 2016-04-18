@@ -70,7 +70,8 @@ final class BaseParametersResolver implements ParametersResolverInterface
     {
         $this->parameters = $parameters;
         foreach ($this->parameters as $key => $value) {
-            $value = $this->resolveValue($value, [$key => true]);
+            $resolving = $this->addToResolving([], $key);
+            $value = $this->resolveValue($value, $resolving);
             $this->resolved[$key] = $value;
         }
 
@@ -126,20 +127,48 @@ final class BaseParametersResolver implements ParametersResolverInterface
      */
     private function resolveString($value, array $resolving)
     {
+        if (preg_match('/^%([^%\s]+)%$/', $value, $match)) {
+            $key = $match[1];
+            $resolving = $this->addToResolving($resolving, $key);
+            return $this->resolveStringKey($key, $resolving);
+        }
+        $self = $this;
+        return preg_replace_callback(
+            '/%%|%([^%\s]+)%/',
+            function ($match) use ($self, $resolving, $value) {
+                // skip %%
+                if (false === isset($match[1])) {
+                    return '%%';
+                }
+                $key = $match[1];
+                $resolving = $this->addToResolving($resolving, $key);
+                return $this->resolveStringKey($key, $resolving);
+            },
+            $value
+        );
+    }
+    
+    /**
+     * @param $value
+     * @param $resolving
+     *
+     * @return array|mixed
+     * @throws ParameterCircularReferenceException
+     * @throws ParameterNotFoundException
+     */
+    private function resolveStringKey($value, array $resolving)
+    {
         if (0 === preg_match('/^%([^%\s]+)%$/', $value, $match)) {
             if (false === array_key_exists($value, $resolving)) {
                 return $value;
             }
-
             $key = $value;
         } else {
             $key = $match[1];
         }
-
         if (array_key_exists($key, $this->parameters)) {
             return $this->resolveParameter($key, $resolving);
         }
-
         if ($this->config->has($key)) {
             return $this->config->get($key);
         }
@@ -161,7 +190,7 @@ final class BaseParametersResolver implements ParametersResolverInterface
             return $this->resolved[$key];
         }
 
-        if (array_key_exists($key, $resolving)) {
+        if (array_key_exists($key, $resolving) && $resolving[$key] >= 10) {
             throw new ParameterCircularReferenceException(
                 sprintf(
                     'Circular reference detected for the parameter "%s" while resolving [%s]',
@@ -170,7 +199,7 @@ final class BaseParametersResolver implements ParametersResolverInterface
                 )
             );
         }
-        $resolving[$key] = true;
+        $resolving = $this->addToResolving($resolving, $key);
         $this->resolved[$key] = $this->resolveValue($this->parameters[$key], $resolving);
 
         return $this->resolved[$key];
@@ -207,5 +236,21 @@ final class BaseParametersResolver implements ParametersResolverInterface
         }
 
         return $this->expressionLanguage;
+    }
+
+    /**
+     * @param array  $resolving
+     * @param string $key
+     *
+     * @return array
+     */
+    private function addToResolving(array $resolving, $key)
+    {
+        if (array_key_exists($key, $resolving)) {
+            $resolving[$key]++;
+        } else {
+            $resolving[$key] = 1;
+        }
+        return $resolving;
     }
 }

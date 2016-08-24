@@ -62,9 +62,9 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
             'config_value' => 'en',
             'other_config_val' => 'Fidry\LaravelYaml\Test\Foundation\ApplicationMock',
             'hello' => 'world',
-            'escaped_percent_sign' => '%%hello%%',
-            'escaped_percent_sign_with_parameter' => '%%world%%%',
-            'double_escaped_percent_sign' => '%%%%hello%%%%',
+            'escaped_percent_sign' => '%hello%',
+            'escaped_percent_sign_with_parameter' => '%world%%',
+            'double_escaped_percent_sign' => '%%hello%%',
             'lang' => [
                 'en',
                 'fr',

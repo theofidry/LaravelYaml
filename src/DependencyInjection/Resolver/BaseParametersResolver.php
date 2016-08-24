@@ -138,7 +138,7 @@ final class BaseParametersResolver implements ParametersResolverInterface
             function ($match) use ($self, $resolving, $value) {
                 // skip %%
                 if (false === isset($match[1])) {
-                    return '%%';
+                    return '%';
                 }
                 $key = $match[1];
                 $resolving = $this->addToResolving($resolving, $key);
